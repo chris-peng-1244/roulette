@@ -1,7 +1,7 @@
 // @flow
 import {connection, Sequelize} from './index';
 
-const User = connection.define('users', {
+const UserTable = connection.define('users', {
     mobile:{
         type: Sequelize.STRING,
         unique: true,
@@ -10,6 +10,9 @@ const User = connection.define('users', {
         type: Sequelize.STRING,
         unique: true
     },
+    balance: {
+        type: Sequelize.BIGINT,
+    }
 });
 
-export default User;
+export default UserTable;

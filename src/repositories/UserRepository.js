@@ -1,5 +1,5 @@
 // @flow
-import User from '../models/User';
+import UserTable from '../models/UserTable';
 import logger from '../logger';
 import _ from 'lodash';
 
@@ -13,15 +13,15 @@ class UserRepository {
         return repo;
     }
 
-    async findByMobile(mobile): Promise<User> {
-        return await User.findOne({
+    async findByMobile(mobile): Promise<UserTable> {
+        return await UserTable.findOne({
             where: {mobile}
         });
     }
 
-    async createUser(mobile): Promise<User> {
+    async createUser(mobile): Promise<UserTable> {
         try {
-            return await User.create({
+            return await UserTable.create({
                 mobile,
                 inviteCode: await this._randomInviteCode(),
             });
@@ -40,7 +40,7 @@ class UserRepository {
             for (let i = 0; i < 4; i++) {
                 inviteCode += chars[_.random(0, chars.length-1)];
             }
-            foundUniqueCode = await User.count({where: {inviteCode}}) === 0;
+            foundUniqueCode = await UserTable.count({where: {inviteCode}}) === 0;
         }
         return inviteCode;
     }

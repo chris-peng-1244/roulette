@@ -12,6 +12,12 @@ class GameRotator {
     previousGame: Game | null;
     currentGame: Game;
 
+
+    constructor(previousGame: Game | null, currentGame: Game) {
+        this.previousGame = previousGame;
+        this.currentGame = currentGame;
+    }
+
     rotate(): Game {
         if (!this.currentGame.hasReachedDeadline()) {
             throw new Error("Current game hasn't ended");
@@ -49,7 +55,7 @@ class GameRotator {
             const newBet = new UserBet();
             newBet.amount = bet * NEXT_ROUND_AUTO_BET_RATIO;
             newBet.user = bet.user;
-            newBet.createdAt = new Date();
+            newBet.beginAt = new Date();
             return newBet;
         });
     }
@@ -59,7 +65,7 @@ class GameRotator {
         newGame.round = this.currentGame.round + 1;
         newGame.goal = this.currentGame.goal * NEXT_ROUND_GOAL_INCR_RATIO;
         newGame.userBetList = this.getNewUserBets();
-        newGame.createdAt = createdAt;
+        newGame.beginAt = createdAt;
         newGame.deadline = new Date(createdAt.getTime() + NEXT_ROUND_INTERVAL);
         newGame.status = GameStatus.STARTED;
         return newGame;
@@ -70,7 +76,7 @@ class GameRotator {
         newGame.round = 1;
         newGame.userBetList = [];
         newGame.goal = GAME_INITIAL_GOAL;
-        newGame.createdAt = createdAt;
+        newGame.beginAt = createdAt;
         newGame.deadline = new Date(createdAt.getTime() + NEXT_ROUND_INTERVAL);
         newGame.status = GameStatus.STARTED;
         return newGame;
