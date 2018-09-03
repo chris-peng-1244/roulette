@@ -7,7 +7,7 @@ gulp.task('build', () => {
         .pipe(sourceMaps.init())
         .pipe(gulpBabel({
             "presets": [
-                "@babel/env",
+                ["@babel/env", {targets: {node: "current"}}],
                 "@babel/flow",
             ],
         }))
