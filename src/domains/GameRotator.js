@@ -2,6 +2,7 @@
 import Game from "./Game";
 import UserBet from "./UserBet";
 import GameStatus from './GameStatus';
+import _ from 'lodash';
 
 const NEXT_ROUND_AUTO_BET_RATIO = 0.05;
 const NEXT_ROUND_GOAL_INCR_RATIO = 1.58;
@@ -51,11 +52,12 @@ class GameRotator {
     }
 
     getNewUserBets() {
-        return this.currentGame.userBetList.map(bet => {
+        return _.forEach(this.currentGame.userBetList, bet => {
             const newBet = new UserBet();
-            newBet.amount = bet * NEXT_ROUND_AUTO_BET_RATIO;
+            newBet.autoInvest = bet.manualInvest * NEXT_ROUND_AUTO_BET_RATIO;
             newBet.user = bet.user;
             newBet.beginAt = new Date();
+            newBet.reward = newBet.autoInvest * 0.01;
             return newBet;
         });
     }

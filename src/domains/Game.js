@@ -11,6 +11,7 @@ import _ from 'lodash';
  * 2. The next round didn't reach it's goal
  */
 
+const SPECIAL_REWARD_RATIO = 0.1;
 class Game {
     beginAt: Date;
     deadline: Date;
@@ -20,8 +21,11 @@ class Game {
     round: number;
     goal: number;
     status: string;
-    userBetList: {[number]: UserBet} = {};
+    userBetList: {[number]: UserBet};
 
+    constructor() {
+        this.userBetList = {};
+    }
 
     // How many eth this game has gathered.
     // This number is virtual
@@ -38,10 +42,21 @@ class Game {
     }
 
     addUserBet(bet: UserBet) {
-        if (this.userBetList[bet.user.id]) {
+        const pool = this.getPool();
+        if (pool >= this.goal) {
             return;
         }
-        this.userBetList[bet.user.id] = bet;
+
+        if (this.userBetList[bet.user.id]) {
+            this.userBetList[bet.user.id].manualInvest += bet.manualInvest;
+            this.userBetList[bet.user.id].lastInvestedAt = new Date();
+        } else {
+            this.userBetList[bet.user.id] = bet;
+        }
+
+        if ((pool + bet.manualInvest) >= this.goal) {
+            this.userBetList[bet.user.id].reward += this.goal*SPECIAL_REWARD_RATIO;
+        }
     }
 }
 
