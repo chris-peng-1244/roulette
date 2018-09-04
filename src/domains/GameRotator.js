@@ -4,6 +4,7 @@ import UserBet from "./UserBet";
 import GameStatus from './GameStatus';
 import _ from 'lodash';
 import AssetStrategy from "./AssetStrategy";
+import PrizePool from "./PrizePool";
 
 const NEXT_ROUND_GOAL_INCR_RATIO = 1.58;
 const NEXT_ROUND_INTERVAL = 24*3600*1000;
@@ -12,9 +13,9 @@ const GAME_INITIAL_GOAL = 50000000000000000000;
 class GameRotator {
     previousGame: Game | null;
     currentGame: Game;
-    pool: number;
+    pool: PrizePool;
 
-    constructor(pool: number, previousGame: Game | null, currentGame: Game) {
+    constructor(pool: PrizePool, previousGame: Game | null, currentGame: Game) {
         this.pool = pool;
         this.previousGame = previousGame;
         this.currentGame = currentGame;
@@ -69,7 +70,7 @@ class GameRotator {
     // }
 
     _createNextRound(createdAt: Date = new Date()): Game {
-        let newGame = new Game();
+        let newGame = new Game(this.pool);
         newGame.round = this.currentGame.round + 1;
         newGame.goal = this.currentGame.goal * NEXT_ROUND_GOAL_INCR_RATIO;
         newGame.userBetList = {};
@@ -80,7 +81,7 @@ class GameRotator {
     }
 
     _createNewRound(createdAt: Date = new Date()): Game {
-        let newGame = new Game();
+        let newGame = new Game(this.pool);
         newGame.round = 1;
         newGame.userBetList = [];
         newGame.goal = GAME_INITIAL_GOAL;

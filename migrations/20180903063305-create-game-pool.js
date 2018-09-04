@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-    return db.createTable('game-pool', {
+    return db.createTable('game-total', {
         id: {
             type: 'int',
             primaryKey: true,
@@ -34,7 +34,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-    return db.dropTable('game-pool');
+    return db.dropTable('game-total');
 };
 
 exports._meta = {

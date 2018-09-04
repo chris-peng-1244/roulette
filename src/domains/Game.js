@@ -1,8 +1,7 @@
 // @flow
-
 import UserBet from "./UserBet";
-import GameStatus from './GameStatus';
 import _ from 'lodash';
+import PrizePool from "./PrizePool";
 
 /**
  * A game ends when it hits the deadline.
@@ -22,9 +21,11 @@ class Game {
     goal: number;
     status: string;
     userBetList: {[number]: UserBet};
+    realPool: PrizePool;
 
-    constructor() {
+    constructor(realPool: PrizePool) {
         this.userBetList = {};
+        this.realPool = realPool;
     }
 
     // How many eth this game has gathered.
@@ -64,6 +65,7 @@ class Game {
         if ((pool + bet.manualInvest) >= this.goal) {
             this.userBetList[bet.user.id].reward += this.goal*SPECIAL_REWARD_RATIO;
         }
+        this.realPool.total += bet.manualInvest;
     }
 }
 

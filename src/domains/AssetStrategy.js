@@ -3,6 +3,7 @@ import Game from "./Game";
 import _ from 'lodash';
 import UserBet from "./UserBet";
 import User from "./User";
+import PrizePool from "./PrizePool";
 
 const AUTO_INVEST_RATIO = 0.05;
 
@@ -21,9 +22,9 @@ class AssetStrategy {
 }
 
 class RefundStrategy {
-    evaluate(previous: Game | null, current: Game, next: Game, pool: number) {
+    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
         const {totalFund, userFunds, users} = _getFundsInfo(previous, current);
-        let ratio = totalFund / pool;
+        let ratio = totalFund / pool.total;
         ratio = ratio > 1 ? 1 : ratio;
 
         _.forEach(userFunds, (fund, userId) => {
@@ -34,7 +35,7 @@ class RefundStrategy {
 }
 
 class NextRoundStrategy {
-    evaluate(previous: Game | null, current: Game, next: Game, pool: number) {
+    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
         _.forEach(current.userBetList, (bet: UserBet) => {
             if (bet.manualInvest) {
                 const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest*AUTO_INVEST_RATIO);
@@ -46,11 +47,11 @@ class NextRoundStrategy {
 }
 
 class SucceedStrategy {
-    evaluate(previous: Game, current: Game, next: Game, pool: number) {
+    evaluate(previous: Game, current: Game, next: Game, pool: PrizePool) {
         _.forEach(previous.userBetList, (bet: UserBet) => {
             const totalReward = bet.reward + bet.getInvestment();
             bet.user.balance += totalReward;
-            // pool should be reduced
+            // total should be reduced
         });
         const lastBet: UserBet = _getLastBet(current);
         _.forEach(current.userBetList, (bet: UserBet) => {
