@@ -24,11 +24,13 @@ class AssetStrategy {
 class RefundStrategy {
     evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
         const {totalFund, userFunds, users} = _getFundsInfo(previous, current);
-        let ratio = totalFund / pool.total;
+        let ratio = pool.total / totalFund;
         ratio = ratio > 1 ? 1 : ratio;
 
         _.forEach(userFunds, (fund, userId) => {
-            users[userId].balance += userFunds[userId] * ratio;
+            const refund = Math.floor(userFunds[userId] * ratio);
+            users[userId].balance += refund;
+            pool.total -= refund;
         });
     }
 
@@ -51,7 +53,7 @@ class SucceedStrategy {
         _.forEach(previous.userBetList, (bet: UserBet) => {
             const totalReward = bet.reward + bet.getInvestment();
             bet.user.balance += totalReward;
-            // total should be reduced
+            pool.total -= totalReward;
         });
         const lastBet: UserBet = _getLastBet(current);
         _.forEach(current.userBetList, (bet: UserBet) => {
@@ -63,8 +65,7 @@ class SucceedStrategy {
                 } else {
                     const exceedInvest = current.getExceedInvest();
                     bet.manualInvest -= exceedInvest;
-                    const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest * AUTO_INVEST_RATIO);
-                    nextBet.manualInvest = exceedInvest;
+                    const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest * AUTO_INVEST_RATIO + exceedInvest);
                     next.addUserBet(nextBet);
                     bet.manualInvest *= (1 - AUTO_INVEST_RATIO);
                 }
