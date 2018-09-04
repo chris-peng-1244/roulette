@@ -23,8 +23,8 @@ describe("GameTable rotator", () => {
         game.status = GameStatus.STARTED;
         game.goal = 50;
         game.deadline = new Date();
-        const betA = UserBet.make(game, userA, 20);
-        const betB = UserBet.make(game, userB, 10);
+        const betA = UserBet.makeManualBet(game, userA, 20);
+        const betB = UserBet.makeManualBet(game, userB, 10);
         userA.balance.should.equal(0);
         userB.balance.should.equal(0);
         betA.manualInvest.should.equal(20);
@@ -34,15 +34,12 @@ describe("GameTable rotator", () => {
         game.addUserBet(betA);
         game.addUserBet(betB);
 
-        const rotator = new GameRotator(null, game);
+        const rotator = new GameRotator(30, null, game);
         const newRound = rotator.rotate();
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(1);
         newRound.goal.should.equal(50);
         game.status.should.equal(GameStatus.FAIL_AT_ITS_OWN_ROUND);
-
-        const assetCal = new AssetCalculator(null, game);
-        assetCal.calculateAfterARound();
         userA.balance.should.equal(20);
         userB.balance.should.equal(10);
     });
@@ -53,9 +50,9 @@ describe("GameTable rotator", () => {
         game.status = GameStatus.STARTED;
         game.goal = 50;
         game.deadline = new Date();
-        const betA = UserBet.make(game, userA, 20);
-        const betB = UserBet.make(game, userB, 10);
-        const betC = UserBet.make(game, userC, 20);
+        const betA = UserBet.makeManualBet(game, userA, 20);
+        const betB = UserBet.makeManualBet(game, userB, 10);
+        const betC = UserBet.makeManualBet(game, userC, 20);
         game.addUserBet(betA);
         game.addUserBet(betB);
         game.addUserBet(betC);
@@ -67,16 +64,17 @@ describe("GameTable rotator", () => {
         betB.reward.should.equal(1);
         betC.reward.should.equal(7);
 
-        const rotator = new GameRotator(null, game);
+        const rotator = new GameRotator(50, null, game);
         const newRound = rotator.rotate();
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(2);
         newRound.goal.should.equal(79);
         game.status.should.equal(GameStatus.PENDING_FOR_NEXT_ROUND);
-        //
-        // const assetCal = new AssetCalculator(null, game);
-        // assetCal.calculateAfterARound();
-        // userA.balance.should.equal(20);
-        // userB.balance.should.equal(10);
+        game.userBetList[userA.id].manualInvest.should.equal(19);
+        game.userBetList[userB.id].manualInvest.should.equal(9.5);
+        game.userBetList[userC.id].manualInvest.should.equal(19);
+        newRound.userBetList[userA.id].autoInvest.should.equal(1);
+        newRound.userBetList[userB.id].autoInvest.should.equal(0.5);
+        newRound.userBetList[userC.id].autoInvest.should.equal(1);
     });
 });

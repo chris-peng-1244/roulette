@@ -27,13 +27,23 @@ class UserBet {
         return this.manualInvest + this.autoInvest;
     }
 
-    static make(game: Game, user: User, invest: number): UserBet {
+    static makeManualBet(game: Game, user: User, invest: number): UserBet {
         if (user.balance < invest) {
             throw new Error("User doesn't have enough balance");
         }
         user.balance -= invest;
         let bet: UserBet = new UserBet();
         bet.manualInvest = invest;
+        bet.reward = invest * REWARD_RATIO;
+        bet.lastInvestedAt = new Date();
+        bet.user = user;
+        return bet;
+    }
+
+    static makeAutoBet(game: Game, user: User, invest: number): UserBet {
+        let bet: UserBet = new UserBet();
+        bet.manualInvest = 0;
+        bet.autoInvest = invest;
         bet.reward = invest * REWARD_RATIO;
         bet.lastInvestedAt = new Date();
         bet.user = user;
