@@ -5,10 +5,9 @@ import GameStatus from './GameStatus';
 import _ from 'lodash';
 import AssetStrategy from "./AssetStrategy";
 
-const NEXT_ROUND_AUTO_BET_RATIO = 0.05;
 const NEXT_ROUND_GOAL_INCR_RATIO = 1.58;
 const NEXT_ROUND_INTERVAL = 24*3600*1000;
-const GAME_INITIAL_GOAL = 50;
+const GAME_INITIAL_GOAL = 50000000000000000000;
 
 class GameRotator {
     previousGame: Game | null;
@@ -22,10 +21,6 @@ class GameRotator {
     }
 
     rotate(): Game {
-        if (!this.currentGame.hasReachedDeadline()) {
-            throw new Error("Current game hasn't ended");
-        }
-
         const now = new Date();
         let newRound;
         let strategy;

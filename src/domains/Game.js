@@ -37,6 +37,14 @@ class Game {
         return total;
     }
 
+    getExceedInvest(): number {
+        const pool = this.getPool();
+        if (pool < this.goal) {
+            return 0;
+        }
+        return pool - this.goal;
+    }
+
     hasReachedDeadline(): boolean {
         return this.deadline.getTime() <= new Date().getTime();
     }
@@ -49,7 +57,6 @@ class Game {
 
         if (this.userBetList[bet.user.id]) {
             this.userBetList[bet.user.id].manualInvest += bet.manualInvest;
-            this.userBetList[bet.user.id].lastInvestedAt = new Date();
         } else {
             this.userBetList[bet.user.id] = bet;
         }

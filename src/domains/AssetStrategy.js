@@ -16,7 +16,7 @@ class AssetStrategy {
     }
 
     static createSucceedRoundStrategy() {
-        return undefined;
+        return new SucceedStrategy();
     }
 }
 
@@ -43,6 +43,38 @@ class NextRoundStrategy {
             }
         });
     }
+}
+
+class SucceedStrategy {
+    evaluate(previous: Game, current: Game, next: Game, pool: number) {
+        _.forEach(previous.userBetList, (bet: UserBet) => {
+            const totalReward = bet.reward + bet.getInvestment();
+            bet.user.balance += totalReward;
+            // pool should be reduced
+        });
+        const lastBet: UserBet = _getLastBet(current);
+        _.forEach(current.userBetList, (bet: UserBet) => {
+            if (bet.manualInvest) {
+                if (bet.user.id !== lastBet.user.id) {
+                    const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest * AUTO_INVEST_RATIO);
+                    next.addUserBet(nextBet);
+                    bet.manualInvest *= (1 - AUTO_INVEST_RATIO);
+                } else {
+                    const exceedInvest = current.getExceedInvest();
+                    bet.manualInvest -= exceedInvest;
+                    const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest * AUTO_INVEST_RATIO);
+                    nextBet.manualInvest = exceedInvest;
+                    next.addUserBet(nextBet);
+                    bet.manualInvest *= (1 - AUTO_INVEST_RATIO);
+                }
+            }
+        });
+    }
+}
+
+function _getLastBet(game: Game): UserBet {
+    const betList = Object.values(game.userBetList);
+    return _.sortBy(betList, ['lastInvestedAt'])[betList.length-1];
 }
 
 function _getFundsInfo(previous: Game, current: Game) {
