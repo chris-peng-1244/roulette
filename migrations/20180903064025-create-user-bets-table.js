@@ -36,6 +36,9 @@ exports.up = function(db) {
         manualInvest: {
             type: 'bigint',
         } ,
+        lastInvestedAt: {
+            type: 'timestamp',
+        },
         createdAt: {
             type: 'timestamp',
         },

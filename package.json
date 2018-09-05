@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "boom": "^7.2.0",
     "db-migrate": "^0.11.1",
@@ -36,7 +37,8 @@
     "eslint-plugin-mocha": "^5.2.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
-    "gulp-sourcemaps": "^2.6.4"
+    "gulp-sourcemaps": "^2.6.4",
+    "mocha": "^5.2.0"
   },
   "eslintConfig": {
     "extends": [
@@ -62,7 +64,14 @@
   },
   "babel": {
     "presets": [
-      ["@babel/env", {"targets": {"node": "current"}}],
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/flow"
     ]
   }

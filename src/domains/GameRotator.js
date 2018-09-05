@@ -1,8 +1,6 @@
 // @flow
 import Game from "./Game";
-import UserBet from "./UserBet";
 import GameStatus from './GameStatus';
-import _ from 'lodash';
 import AssetStrategy from "./AssetStrategy";
 import PrizePool from "./PrizePool";
 
@@ -57,17 +55,6 @@ class GameRotator {
         strategy.evaluate(this.previousGame, this.currentGame, newRound, this.pool);
         return newRound;
     }
-
-    // getNewUserBets() {
-    //     return _.forEach(this.currentGame.userBetList, bet => {
-    //         const newBet = new UserBet();
-    //         newBet.autoInvest = bet.manualInvest * NEXT_ROUND_AUTO_BET_RATIO;
-    //         newBet.user = bet.user;
-    //         newBet.beginAt = new Date();
-    //         newBet.reward = newBet.autoInvest * 0.01;
-    //         return newBet;
-    //     });
-    // }
 
     _createNextRound(createdAt: Date = new Date()): Game {
         let newGame = new Game(this.pool);

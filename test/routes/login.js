@@ -1,5 +1,5 @@
 const {agent} = require('./index');
-const User = require('../../lib/models/User').default;
+const User = require('../../lib/models/UserTable').default;
 
 const mobile = 12344445555;
 describe("Login", () => {

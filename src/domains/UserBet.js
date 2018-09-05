@@ -4,9 +4,9 @@ import User from "./User";
 import Game from "./Game";
 
 const REWARD_RATIO = 0.1;
-const SUPECIAL_REWARD_RATIO = 0.1;
 
 class UserBet {
+    id: number;
     user: User;
     // 最后一次下注时间
     lastInvestedAt: Date;

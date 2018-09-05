@@ -1,11 +1,17 @@
 import {connection, Sequelize} from './index';
 
-const UserBetTable = connection.define('user-bets', {
+const UserBetTable = connection.define('v-user-bets', {
     gameId: {
-        type: Sequelize.INT,
+        type: Sequelize.INTEGER,
     },
     userId: {
-        type: Sequelize.INT,
+        type: Sequelize.INTEGER,
+    },
+    userBalance: {
+        type: Sequelize.BIGINT,
+    },
+    userInviteCode: {
+        type: Sequelize.STRING,
     },
     reward: {
         type: Sequelize.BIGINT,
@@ -16,6 +22,9 @@ const UserBetTable = connection.define('user-bets', {
     manualInvest: {
         type: Sequelize.BIGINT,
     },
+    lastInvestedAt: {
+        type: Sequelize.DATE,
+    }
 });
 
 export default UserBetTable;

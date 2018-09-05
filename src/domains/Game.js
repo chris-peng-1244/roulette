@@ -23,8 +23,8 @@ class Game {
     userBetList: {[number]: UserBet};
     realPool: PrizePool;
 
-    constructor(realPool: PrizePool) {
-        this.userBetList = {};
+    constructor(realPool: PrizePool, userBetList?: UserBet[] = {}) {
+        this.userBetList = userBetList;
         this.realPool = realPool;
     }
 
