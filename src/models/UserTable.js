@@ -11,7 +11,7 @@ const UserTable = connection.define('users', {
         unique: true
     },
     balance: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.DECIMAL(23, 18),
     }
 });
 

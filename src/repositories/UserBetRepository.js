@@ -1,21 +1,25 @@
 // @flow
 import UserBet from "../domains/UserBet";
-import UserBetTable from "../models/UserBetTable";
+import UserBetView from "../models/UserBetView";
 import User from "../domains/User";
+import {toWei} from '../utils/eth-units';
 
 class UserBetRepository {
     async getUserBetListByGameId(gameId: string): Promise<UserBet[]> {
-        const data = await UserBetTable.findAll({
+        const data = await UserBetView.findAll({
             where: {gameId}
         });
         return data.map(value => {
             const bet = new UserBet();
             bet.id = value.id;
-            bet.manualInvest = value.manualInvest;
-            bet.autoInvest = value.autoInvest;
+            bet.manualInvest = toWei(value.manualInvest, 'ether');
+            bet.autoInvest = toWei(value.autoInvest, 'ether');
+            bet.reward = toWei(value.reward, 'ether');
             bet.lastInvestedAt = value.lastInvestedAt;
-            bet.reward = value.reward;
-            bet.user = new User(data.userId, data.userBalance, data.userInviteCode);
+            bet.user = new User(
+                value.userId,
+                toWei(value.userBalance, 'ether'),
+                value.userInviteCode);
             return bet;
         });
     }

@@ -1,11 +1,17 @@
 import {connection, Sequelize} from './index';
 
-const UserBetTable = connection.define('user-bets', {
+const UserBetView = connection.define('v-user-bets', {
     gameId: {
         type: Sequelize.INTEGER,
     },
     userId: {
         type: Sequelize.INTEGER,
+    },
+    userBalance: {
+        type: Sequelize.DECIMAL(23, 18),
+    },
+    userInviteCode: {
+        type: Sequelize.STRING,
     },
     reward: {
         type: Sequelize.DECIMAL(20, 18),
@@ -21,4 +27,4 @@ const UserBetTable = connection.define('user-bets', {
     }
 });
 
-export default UserBetTable;
+export default UserBetView;

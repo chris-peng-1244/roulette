@@ -1,6 +1,7 @@
 import express from 'express';
 import boom from 'boom';
 import {createGameRepository} from "../repositories/RepositoryFactory";
+import {fromWei} from 'web3-utils';
 
 const router = express.Router();
 const gameRepo = createGameRepository();
@@ -12,8 +13,8 @@ router.get('/', async (req, res, next) => {
     }
 
     return res.json({
-        goal: game.goal,
-        pool: game.getPool(),
+        goal: fromWei(game.goal.toString(), 'ether'),
+        pool: fromWei(game.getPool().toString(), 'ether'),
         deadline: game.deadline,
     });
 });

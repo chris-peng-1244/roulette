@@ -22,6 +22,7 @@
     "mysql2": "^1.6.1",
     "redis": "^2.8.0",
     "sequelize": "^4.38.0",
+    "web3-utils": "^1.0.0-beta.36",
     "winston": "^3.0.0"
   },
   "devDependencies": {

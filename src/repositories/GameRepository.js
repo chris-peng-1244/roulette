@@ -5,6 +5,7 @@ import GameStatus from "../domains/GameStatus";
 import PrizePoolRepository from "./PrizePoolRepository";
 import UserBetRepository from "./UserBetRepository";
 import UserBet from "../domains/UserBet";
+import {toWei} from '../utils/eth-units';
 
 class GameRepository {
     prizePoolRepo: PrizePoolRepository;
@@ -37,7 +38,7 @@ class GameRepository {
         game.deadline = data.deadline;
         game.status = data.status;
         game.round = data.round;
-        game.goal = data.goal;
+        game.goal = toWei(data.goal, 'ether');
         game.beginAt = data.beginAt;
         return game;
     }

@@ -17,7 +17,7 @@ const GameTable = connection.define('games', {
         type: Sequelize.STRING,
     },
     goal: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(23, 18),
     }
 });
 
