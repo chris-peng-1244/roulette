@@ -16,7 +16,7 @@ async function auth(req, res, next) {
         if (!user) {
             return next(boom.badRequest('Cant find user in token'));
         }
-        req.app.set('user', userDataInToken);
+        req.app.set('user', user);
         next();
     } catch (e) {
         logger.error('[Middleware auth] verify token ', e);

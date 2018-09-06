@@ -14,7 +14,6 @@ router.post('/login', async (req, res, next) => {
     }
     const token = await sign({
         id: user.id,
-        mobile: user.mobile,
     });
     return res.json({
         token,

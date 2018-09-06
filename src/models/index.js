@@ -13,7 +13,8 @@ const connection = new Sequelize(
         pool: {
             max: 5,
             min: 0,
-        }
+        },
+        logging: config.SEQUELIZE_LOGGING
     }
 );
 
