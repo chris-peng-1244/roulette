@@ -2,12 +2,14 @@ const GameTable = require('../../lib/models/GameTable').default;
 const GameStatus = require("../../lib/domains/GameStatus").default;
 const UserTable = require("../../lib/models/UserTable").default;
 const UserBetTable = require("../../lib/models/UserBetTable").default;
+const UserBetLogTable = require("../../lib/models/UserBetLogTable").default;
 
 exports.clearGameData = async() => {
     await Promise.all([
-        GameTable.destroy({truncate: true}),
-        UserTable.destroy({truncate: true}),
-        UserBetTable.destroy({truncate: true}),
+        UserBetLogTable.destroy({where: {}}),
+        GameTable.destroy({where: {}}),
+        UserTable.destroy({where: {}}),
+        UserBetTable.destroy({where: {}}),
     ]);
 };
 
@@ -21,12 +23,12 @@ exports.spawnGameData = async function() {
 
     const users = await Promise.all([
         UserTable.create({
-            balance: 0,
+            balance: 100,
             mobile: 11111111111,
             inviteCode: 1111,
         }),
         UserTable.create({
-            balance: 0,
+            balance: 500,
             mobile: 22222222222,
             inviteCode: 2222,
         })
@@ -49,4 +51,5 @@ exports.spawnGameData = async function() {
             lastInvestedAt: new Date(),
         }),
     ]);
+    return {users, game};
 };

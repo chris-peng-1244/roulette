@@ -1,20 +1,26 @@
 import express from 'express';
-import {createGameRepository, createUserRepository} from "../repositories/RepositoryFactory";
+import {
+    createGameRepository,
+    createUserBetLogRepository,
+    createUserRepository
+} from "../repositories/RepositoryFactory";
 import boom from 'boom';
 import UserBet from "../domains/UserBet";
 import {toWei} from '../utils/eth-units';
 import logger from '../logger';
 import BetTask from "../queues/BetTask";
 import TaskQueue from "../queues/TaskQueue";
+import UserBetLog from "../domains/UserBetLog";
 
 const router = express.Router();
 const gameRepo = createGameRepository();
 const userRepo = createUserRepository();
+const userBetLogRepo = createUserBetLogRepository();
 // Add a new bet to current game
 router.post('/', async(req, res, next) => {
     const game = await gameRepo.getCurrentGame();
-    if (!game) {
-        return next(boom.badImplementation('No game is undertaking'));
+    if (!game || game.hasReachedDeadline()) {
+        return next(boom.badRequest('No game is undertaking'));
     }
 
     if (game.isGoalMet()) {
@@ -28,11 +34,13 @@ router.post('/', async(req, res, next) => {
     }
 
     const bet = UserBet.makeManualBet(game, user, amount);
+    const log = UserBetLog.create(game, bet);
     const task = new BetTask(game, bet);
     try {
         const queue = TaskQueue.getBetQueue();
         if (await queue.addTask(task)) {
             await userRepo.updateUser(user);
+            await userBetLogRepo.addUserBetLog(log);
             return res.json({
                 taskId: task.getId(),
             });

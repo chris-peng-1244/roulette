@@ -4,7 +4,7 @@ const User = require('../../lib/models/UserTable').default;
 const mobile = 12344445555;
 describe("Login", () => {
     before(async() => {
-        await User.destroy({truncate: true});
+        await User.destroy({where: {}});
     });
 
     it("It should login and create new user", async() => {
