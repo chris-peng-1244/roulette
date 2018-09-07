@@ -12,6 +12,7 @@ import PrizePool from "./PrizePool";
 
 const SPECIAL_REWARD_RATIO = 0.1;
 class Game {
+    id: number;
     beginAt: Date;
     deadline: Date;
     // Which round this game is. GameTable starts at round 1.
@@ -36,6 +37,10 @@ class Game {
             total += bet.getInvestment();
         });
         return total;
+    }
+
+    isGoalMet(): boolean {
+        return this.goal <= this.getPool();
     }
 
     getExceedInvest(): number {

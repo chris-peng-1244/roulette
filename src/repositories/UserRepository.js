@@ -3,7 +3,7 @@ import UserTable from '../models/UserTable';
 import logger from '../logger';
 import _ from 'lodash';
 import User from "../domains/User";
-import {toWei} from '../utils/eth-units';
+import {toWei, fromWei} from '../utils/eth-units';
 
 let repo;
 class UserRepository {
@@ -22,7 +22,17 @@ class UserRepository {
         if (!data) {
             return null;
         }
-        return new User(data.id, toWei(data.balance, 'ether'), data.inviteCode);
+        return _db2Domain(data);
+    }
+
+    async findById(id: number): Promise<User | null> {
+        const data = await UserTable.findOne({
+            where: {id}
+        });
+        if (!data) {
+            return null;
+        }
+        return _db2Domain(data);
     }
 
     async createUser(mobile): Promise<UserTable> {
@@ -32,10 +42,24 @@ class UserRepository {
                 balance: 0,
                 inviteCode: await this._randomInviteCode(),
             });
-            return new User(data.id, toWei(data.balance, 'ether'), data.inviteCode);
+            return _db2Domain(data);
         } catch (e) {
             logger.error('[UserRepository] createUser', e);
             throw e;
+        }
+    }
+
+    async updateUser(user: User) {
+        try {
+            const userData = await UserTable.find({
+                where: {id: user.id},
+            });
+            if (userData) {
+                userData.balance = fromWei(user.balance);
+                await userData.save();
+            }
+        } catch (e) {
+            logger.error('[UserRepository] updateUser ' + e.stack);
         }
     }
 
@@ -52,6 +76,10 @@ class UserRepository {
         }
         return inviteCode;
     }
+}
+
+function _db2Domain(data: Object): User {
+    return new User(data.id, toWei(data.balance, 'ether'), data.inviteCode);
 }
 
 export default UserRepository;

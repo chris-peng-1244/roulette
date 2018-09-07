@@ -3,6 +3,7 @@
 import GameRepository from "./GameRepository";
 import PrizePoolRepository from "./PrizePoolRepository";
 import UserBetRepository from "./UserBetRepository";
+import UserRepository from "./UserRepository";
 
 let gameRepo, prizePoolRepo, userBetRepo;
 
@@ -27,8 +28,13 @@ function createUserBetRepository(): UserBetRepository {
     return userBetRepo;
 }
 
+function createUserRepository(): UserRepository {
+    return UserRepository.getInstance();
+}
+
 export {
     createUserBetRepository,
     createPrizePoolRepository,
     createGameRepository,
+    createUserRepository,
 };

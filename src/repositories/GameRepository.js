@@ -26,6 +26,20 @@ class GameRepository {
             return null;
         }
 
+        return await this._createGameModel(data);
+    }
+
+    async findById(id: number): Promise<Game | null> {
+        const data = await GameTable.findOne({
+            where: { id }
+        });
+        if (!data) {
+            return null;
+        }
+        return await this._createGameModel(data);
+    }
+
+    async _createGameModel(data: Object): Promise<Game> {
         const [bets, prizePool] = await Promise.all([
             this.userBetRepo.getUserBetListByGameId(data.id),
             this.prizePoolRepo.getPrizePool(),
@@ -35,6 +49,7 @@ class GameRepository {
             return prev;
         }, {});
         const game = new Game(prizePool, betMap);
+        game.id = data.id;
         game.deadline = data.deadline;
         game.status = data.status;
         game.round = data.round;
@@ -42,6 +57,7 @@ class GameRepository {
         game.beginAt = data.beginAt;
         return game;
     }
+
 }
 
 export default GameRepository;

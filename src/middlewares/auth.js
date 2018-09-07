@@ -12,7 +12,7 @@ async function auth(req, res, next) {
 
     try {
         const userDataInToken = await verify(token);
-        const user = await userRepo.findByMobile(userDataInToken.mobile);
+        const user = await userRepo.findById(userDataInToken.id);
         if (!user) {
             return next(boom.badRequest('Cant find user in token'));
         }
