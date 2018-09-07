@@ -32,11 +32,6 @@ describe("API /bet", () => {
         const log = await UserBetLogTable.find({where: {userId: gUser.id}});
         log.manualInvest.should.equal('1.000000000000000000');
         log.status.should.equal('USER_BET_PENDING');
-        // const queue = TaskQueue.getBetQueue();
-        // const {game, bet} = await queue.consume();
-        // bet.manualInvest.should.equal(1000000000000000000);
-        // bet.user.id.should.equal(3);
-        // game.round.should.equal(1);
     });
 
     it("It should NOT create a new bet when pool is full", async() => {

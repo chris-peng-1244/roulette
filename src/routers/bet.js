@@ -34,13 +34,13 @@ router.post('/', async(req, res, next) => {
     }
 
     const bet = UserBet.makeManualBet(game, user, amount);
-    const log = UserBetLog.create(game, bet);
-    const task = new BetTask(game, bet);
+    const log = UserBetLog.create(bet, game.id);
+    await userBetLogRepo.addUserBetLog(log);
+    const task = new BetTask(game, bet, log);
     try {
         const queue = TaskQueue.getBetQueue();
         if (await queue.addTask(task)) {
-            await userRepo.updateUser(user);
-            await userBetLogRepo.addUserBetLog(log);
+            await userRepo.updateUserBalance(user, -1 * bet.manualInvest);
             return res.json({
                 taskId: task.getId(),
             });

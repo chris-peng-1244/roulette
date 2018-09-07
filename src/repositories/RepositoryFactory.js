@@ -29,7 +29,7 @@ function createUserBetRepository(): UserBetRepository {
     return userBetRepo;
 }
 
-function createUserBetLogRepository(): UserBetRepository {
+function createUserBetLogRepository(): UserBetLogRepository {
     if (!userBetLogRepo) {
         userBetLogRepo = new UserBetLogRepository();
     }

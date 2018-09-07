@@ -4,6 +4,7 @@ import logger from '../logger';
 import _ from 'lodash';
 import User from "../domains/User";
 import {toWei, fromWei} from '../utils/eth-units';
+import {Sequelize} from '../models';
 
 let repo;
 class UserRepository {
@@ -49,17 +50,16 @@ class UserRepository {
         }
     }
 
-    async updateUser(user: User) {
+    async updateUserBalance(user: User, change: number) {
         try {
-            const userData = await UserTable.find({
-                where: {id: user.id},
-            });
-            if (userData) {
-                userData.balance = fromWei(user.balance);
-                await userData.save();
-            }
+            const changeInEther = fromWei(change);
+            const balance = change > 0 ? `balance + ${changeInEther}` : 'balance - '+(-1*changeInEther);
+            await UserTable.update(
+                {balance: Sequelize.literal(balance)},
+                {where: {id: user.id}}
+            );
         } catch (e) {
-            logger.error('[UserRepository] updateUser ' + e.stack);
+            logger.error('[UserRepository] updateUserBalance ' + e.stack);
         }
     }
 

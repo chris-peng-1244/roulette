@@ -1,28 +1,40 @@
 // @flow
-import Game from "./Game";
 import UserBet from "./UserBet";
 import UserBetLogStatus from "./UserBetLogStatus";
 
 class UserBetLog {
-    game: Game;
-    bet: UserBet;
+    id: number;
+    userId: number;
+    gameId: number;
+    manualInvest: number;
+    lastInvestedAt: Date;
     status: string;
     comment: string;
 
-    constructor(game: Game, bet: UserBet) {
-        this.game = game;
-        this.bet = bet;
-    }
-
-    static create(game: Game, bet: UserBet) {
-        const log = new UserBetLog(game, bet);
+    static create(bet: UserBet, gameId: number) {
+        const log = new UserBetLog();
+        log.userId = bet.user.id;
+        log.gameId = gameId;
+        log.manualInvest = bet.manualInvest;
+        log.lastInvestedAt = bet.lastInvestedAt;
         log.status = UserBetLogStatus.PENDING;
         log.comment = 'BET IS STILL PENDING IN QUEUE';
         return log;
     }
 
-    get userId() {
-        return this.bet.user.id;
+    failWhenGameFinished() {
+        this.status = UserBetLogStatus.FAIL;
+        this.comment = 'GAME FINISHED';
+    }
+
+    failWhenGameFulfilled() {
+        this.status = UserBetLogStatus.FAIL;
+        this.comment = 'GAME GOAL REACHED BEFORE BET';
+    }
+
+    suceed() {
+        this.status = UserBetLogStatus.SUCCEED;
+        this.comment = 'SUCCEED';
     }
 }
 

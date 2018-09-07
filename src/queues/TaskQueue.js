@@ -1,5 +1,6 @@
-import rabbit from 'amqplib';
 import logger from '../logger';
+import {getChannel} from "./Amqp";
+import QueueName from "./QueueName";
 
 class TaskQueue {
     constructor(name) {
@@ -7,7 +8,7 @@ class TaskQueue {
     }
 
     static getBetQueue() {
-        return new TaskQueue('bet-queue');
+        return new TaskQueue(QueueName.BET_QUEUE);
     }
 
     async addTask(task) {
@@ -48,15 +49,6 @@ class TaskQueue {
     //         });
     //     });
     // }
-}
-
-let channel;
-async function getChannel() {
-    if (!channel) {
-        const conn = await rabbit.connect('amqp://localhost');
-        channel = await conn.createChannel();
-    }
-    return channel;
 }
 
 export default TaskQueue;

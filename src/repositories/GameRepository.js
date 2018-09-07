@@ -50,7 +50,7 @@ class GameRepository {
         }, {});
         const game = new Game(prizePool, betMap);
         game.id = data.id;
-        game.deadline = data.deadline;
+        game.deadline = new Date(data.deadline);
         game.status = data.status;
         game.round = data.round;
         game.goal = toWei(data.goal, 'ether');
