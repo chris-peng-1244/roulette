@@ -6,6 +6,7 @@ import bearerToken from 'express-bearer-token';
 import login from './routers/login';
 import game from './routers/game';
 import bet from './routers/bet';
+import user from './routers/user';
 import auth from './middlewares/auth';
 import boom from 'boom';
 
@@ -18,6 +19,7 @@ app.use(login);
 app.use('/game', game);
 app.use(auth);
 app.use('/bet', bet);
+app.use('/user', user);
 
 // Error handling
 app.use((err, req, res, next) => {

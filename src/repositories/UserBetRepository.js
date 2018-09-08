@@ -12,18 +12,18 @@ class UserBetRepository {
             where: {gameId}
         });
         return data.map(value => {
-            const bet = new UserBet();
-            bet.id = value.id;
-            bet.manualInvest = toWei(value.manualInvest, 'ether');
-            bet.autoInvest = toWei(value.autoInvest, 'ether');
-            bet.reward = toWei(value.reward, 'ether');
-            bet.lastInvestedAt = value.lastInvestedAt;
-            bet.user = new User(
-                value.userId,
-                toWei(value.userBalance, 'ether'),
-                value.userInviteCode);
-            return bet;
+            return _db2Domain(value);
         });
+    }
+
+    async getUserBetByGameId(gameId: number, userId: number): Promise<UserBet | null> {
+        const data = await UserBetView.find({
+            where: {gameId, userId},
+        });
+        if (!data) {
+            return null;
+        }
+        return _db2Domain(data);
     }
 
     async createUserBet(game: Game, userBet: UserBet) {
@@ -64,6 +64,20 @@ class UserBetRepository {
         );
     }
 
+}
+
+function _db2Domain(value: Object): UserBet{
+    const bet = new UserBet();
+    bet.id = value.id;
+    bet.manualInvest = toWei(value.manualInvest, 'ether');
+    bet.autoInvest = toWei(value.autoInvest, 'ether');
+    bet.reward = toWei(value.reward, 'ether');
+    bet.lastInvestedAt = value.lastInvestedAt;
+    bet.user = new User(
+        value.userId,
+        toWei(value.userBalance, 'ether'),
+        value.userInviteCode);
+    return bet;
 }
 
 export default UserBetRepository;
