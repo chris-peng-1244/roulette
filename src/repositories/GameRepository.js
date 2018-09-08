@@ -5,7 +5,8 @@ import GameStatus from "../domains/GameStatus";
 import PrizePoolRepository from "./PrizePoolRepository";
 import UserBetRepository from "./UserBetRepository";
 import UserBet from "../domains/UserBet";
-import {toWei} from '../utils/eth-units';
+import bluebird from 'bluebird';
+import {toWei, fromWei} from '../utils/eth-units';
 
 class GameRepository {
     prizePoolRepo: PrizePoolRepository;
@@ -58,6 +59,20 @@ class GameRepository {
         return game;
     }
 
+    async createGame(game: Game) {
+        const gameData = await GameTable.create({
+            round: game.round,
+            beginAt: game.beginAt,
+            deadline: game.deadline,
+            status: game.status,
+            goal: fromWei(game.goal),
+        });
+
+        game.id = gameData.id;
+        await bluebird.map(game.userBetList, async(bet: UserBet) => {
+            await this.userBetRepo.createUserBet(game, bet);
+        });
+    }
 }
 
 export default GameRepository;

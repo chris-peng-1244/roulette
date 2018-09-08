@@ -75,6 +75,7 @@ class Game {
         this.realPool.total += bet.manualInvest;
         return bet;
     }
+
 }
 
 export default Game;

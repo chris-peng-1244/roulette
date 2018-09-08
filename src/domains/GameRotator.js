@@ -3,10 +3,7 @@ import Game from "./Game";
 import GameStatus from './GameStatus';
 import AssetStrategy from "./AssetStrategy";
 import PrizePool from "./PrizePool";
-
-const NEXT_ROUND_GOAL_INCR_RATIO = 1.58;
-const NEXT_ROUND_INTERVAL = 24*3600*1000;
-const GAME_INITIAL_GOAL = 50000000000000000000;
+import GameFactory from "./GameFactory";
 
 class GameRotator {
     previousGame: Game | null;
@@ -57,25 +54,11 @@ class GameRotator {
     }
 
     _createNextRound(createdAt: Date = new Date()): Game {
-        let newGame = new Game(this.pool);
-        newGame.round = this.currentGame.round + 1;
-        newGame.goal = this.currentGame.goal * NEXT_ROUND_GOAL_INCR_RATIO;
-        newGame.userBetList = {};
-        newGame.beginAt = createdAt;
-        newGame.deadline = new Date(createdAt.getTime() + NEXT_ROUND_INTERVAL);
-        newGame.status = GameStatus.STARTED;
-        return newGame;
+        return GameFactory.createNextRound(this.pool, this.currentGame, createdAt);
     }
 
     _createNewRound(createdAt: Date = new Date()): Game {
-        let newGame = new Game(this.pool);
-        newGame.round = 1;
-        newGame.userBetList = [];
-        newGame.goal = GAME_INITIAL_GOAL;
-        newGame.beginAt = createdAt;
-        newGame.deadline = new Date(createdAt.getTime() + NEXT_ROUND_INTERVAL);
-        newGame.status = GameStatus.STARTED;
-        return newGame;
+        return GameFactory.createNewRound(this.pool, createdAt);
     }
 }
 
