@@ -2,6 +2,7 @@
 import UserBet from "./UserBet";
 import _ from 'lodash';
 import PrizePool from "./PrizePool";
+import User from "./User";
 
 /**
  * A game ends when it hits the deadline.
@@ -79,6 +80,13 @@ class Game {
 
     getUserBetArray(): UserBet[] {
         return Object.values(this.userBetList);
+    }
+
+    getUserBet(userId: number): UserBet | null {
+        if (this.userBetList[userId]) {
+            return this.userBetList[userId];
+        }
+        return null;
     }
 }
 

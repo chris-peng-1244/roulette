@@ -6,7 +6,7 @@ import {
 } from "../repositories/RepositoryFactory";
 import boom from 'boom';
 import UserBet from "../domains/UserBet";
-import {toWei} from '../utils/eth-units';
+import {toWei, fromWei} from '../utils/eth-units';
 import logger from '../logger';
 import BetTask from "../queues/BetTask";
 import TaskQueue from "../queues/TaskQueue";
@@ -50,6 +50,22 @@ router.post('/', async(req, res, next) => {
         logger.error('POST /bet ' + e.stack);
         return next(boom.badImplementation('Bet failed'));
     }
+});
+
+router.get('/', async(req, res, next) => {
+    let invest = 0, reward = 0;
+    const game = await gameRepo.getCurrentGame();
+    if (game) {
+        const bet = game.getUserBet(req.app.get('user').id);
+        if (bet) {
+            invest = bet.getInvestment();
+            reward = bet.reward;
+        }
+    }
+    return res.json({
+        invest: fromWei(invest),
+        reward: fromWei(reward),
+    });
 });
 
 export default router;
