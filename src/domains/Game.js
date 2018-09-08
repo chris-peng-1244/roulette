@@ -72,7 +72,6 @@ class Game {
         // Jackpot!
         if ((pool + bet.manualInvest) >= this.goal) {
             this.userBetList[bet.user.id].reward += this.goal*SPECIAL_REWARD_RATIO;
-            bet.reward += this.goal*SPECIAL_REWARD_RATIO;
         }
         this.realPool.total += bet.manualInvest;
         return bet;

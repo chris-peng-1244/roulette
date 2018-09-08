@@ -19,7 +19,7 @@ class PrizePoolRepository {
     }
 
     async incrPrizePool(amount: number) {
-        await redis.incrbyAsync(PRIZE_POOL, fromWei(amount));
+        await redis.incrbyfloatAsync(PRIZE_POOL, fromWei(amount));
     }
 }
 

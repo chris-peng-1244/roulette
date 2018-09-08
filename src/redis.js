@@ -9,7 +9,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
 const client = redis.createClient({
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
-    prefix: 'token-casino',
+    prefix: 'token-casino-',
 });
 client.on('error', err => {
     logger.error('[Redis] Connection error ' + err);

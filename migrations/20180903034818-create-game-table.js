@@ -25,10 +25,10 @@ exports.up = function(db) {
             type: 'int'
         },
         beginAt: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         deadline: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         status: {
             type: 'string',
@@ -37,10 +37,10 @@ exports.up = function(db) {
             type: 'bigint'
         },
         createdAt: {
-            type: 'timestamp'
+            type: 'datetime'
         },
         updatedAt: {
-            type: 'timestamp'
+            type: 'datetime'
         },
     })
     .then(() => {

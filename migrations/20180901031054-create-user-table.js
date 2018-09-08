@@ -30,10 +30,10 @@ exports.up = function(db) {
             description: '邀请码',
         },
         createdAt: {
-            type: 'timestamp'
+            type: 'datetime'
         },
         updatedAt: {
-            type: 'timestamp'
+            type: 'datetime'
         },
     });
 };

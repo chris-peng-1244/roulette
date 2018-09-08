@@ -55,9 +55,9 @@ class UserBetRepository {
     async updateUserBet(userBet: UserBet) {
         await UserBetTable.update(
             {
-                reward: userBet.reward,
-                manualInvest: userBet.manualInvest,
-                autoInvest: userBet.autoInvest,
+                reward: fromWei(userBet.reward),
+                manualInvest: fromWei(userBet.manualInvest),
+                autoInvest: fromWei(userBet.autoInvest),
                 lastInvestedAt: userBet.lastInvestedAt,
             },
             {where: {id: userBet.id}}

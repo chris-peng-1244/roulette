@@ -53,7 +53,7 @@ exports.up = function(db) {
             defaultValue: 0,
         } ,
         lastInvestedAt: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         status: {
             type: 'string',
@@ -65,10 +65,10 @@ exports.up = function(db) {
             defaultValue: 'NO COMMENT',
         },
         createdAt: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         updatedAt: {
-            type: 'timestamp',
+            type: 'datetime',
         }
     })
     .then(() => {

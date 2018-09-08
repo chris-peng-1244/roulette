@@ -37,13 +37,13 @@ exports.up = function(db) {
             type: 'bigint',
         } ,
         lastInvestedAt: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         createdAt: {
-            type: 'timestamp',
+            type: 'datetime',
         },
         updatedAt: {
-            type: 'timestamp',
+            type: 'datetime',
         }
    })
     .then(() => {

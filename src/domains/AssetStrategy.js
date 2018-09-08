@@ -24,6 +24,9 @@ class AssetStrategy {
 class RefundStrategy {
     evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
         const {totalFund, userFunds, users} = _getFundsInfo(previous, current);
+        if (!totalFund) {
+            return;
+        }
         let ratio = pool.total / totalFund;
         ratio = ratio > 1 ? 1 : ratio;
 

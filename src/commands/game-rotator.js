@@ -11,6 +11,8 @@ import GameStatus from "../domains/GameStatus";
 import GameFactory from "../domains/GameFactory";
 import Game from "../domains/Game";
 import bluebird from 'bluebird';
+import UserBet from "../domains/UserBet";
+import _ from 'lodash';
 const setTimeoutPromise = util.promisify(setTimeout);
 
 const gameRepo = createGameRepository();
@@ -18,12 +20,13 @@ const prizePoolRepo = createPrizePoolRepository();
 const userRepo = createUserRepository();
 async function rotate() {
     logger.info('Rotating...');
+    const prizePool = await prizePoolRepo.getPrizePool();
     // Get current and previous game
     const currentGame = await gameRepo.getCurrentGame();
 
     if (!currentGame) {
         logger.info('Genesis...');
-        return await createGenesisGame();
+        return await createGenesisGame(prizePool);
     }
 
     if (!currentGame.hasReachedDeadline()) {
@@ -41,14 +44,14 @@ async function rotate() {
     const previousGame = await gameRepo.getPreviousGame(currentGame);
     // Rotate a new round
     const  rotator = new GameRotator(
-        prizePoolRepo.getPrizePool(),
+        prizePool,
         previousGame,
         currentGame);
     const newRound = rotator.rotate();
     // Save the changes
     try {
-        if (previousGame && previousGame.status === GameStatus.SUCCEED) {
-            await sendReward();
+        if (currentGame.status !== GameStatus.PENDING_FOR_NEXT_ROUND) {
+            await setUserBalance(previousGame, currentGame);
         }
         if (previousGame) {
             await gameRepo.updateGame(previousGame);
@@ -56,20 +59,34 @@ async function rotate() {
         await Promise.all([
             gameRepo.updateGame(currentGame),
             gameRepo.createGame(newRound),
+            prizePoolRepo.savePrizePool(prizePool),
         ]);
     } catch (e) {
         logger.error('[Game rotator] ' + e.stack);
     }
 }
 
-async function createGenesisGame() {
-    const genesis = GameFactory.createNewRound(prizePoolRepo.getPrizePool());
+async function createGenesisGame(prizePool) {
+    const genesis = GameFactory.createNewRound(prizePool);
     await gameRepo.createGame(genesis);
 }
 
-async function sendReward(game: Game) {
-    await bluebird.map(game.userBetList, async(bet: UserBet) => {
-        await userRepo.setUserBalance(bet.user);
+async function setUserBalance(previousGame: Game, currentGame: Game) {
+    let users = {};
+    if (previousGame) {
+        _.forEach(previousGame.userBetList, (bet: UserBet, userId) => {
+            if (!users[userId]) {
+                users[userId] = bet.user;
+            }
+        });
+    }
+    _.forEach(currentGame.userBetList, (bet: UserBet, userId) => {
+        if (!users[userId]) {
+            users[userId] = bet.user;
+        }
+    });
+    await bluebird.map(Object.values(users), async user => {
+        return await userRepo.setUserBalance(user);
     });
 }
 

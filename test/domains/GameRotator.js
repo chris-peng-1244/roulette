@@ -1,3 +1,4 @@
+process.env.GAME_INITIAL_GOAL = 50000000000000000000;
 const chai = require('chai');
 const should = chai.should();
 
