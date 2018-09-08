@@ -41,6 +41,7 @@
     "eslint-plugin-mocha": "^5.2.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
+    "gulp-nodemon": "^2.2.1",
     "gulp-sourcemaps": "^2.6.4",
     "mocha": "^5.2.0"
   },
