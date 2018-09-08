@@ -78,6 +78,9 @@ class Game {
         return bet;
     }
 
+    getUserBetArray(): UserBet[] {
+        return Object.values(this.userBetList);
+    }
 }
 
 export default Game;

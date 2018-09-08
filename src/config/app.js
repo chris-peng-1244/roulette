@@ -5,8 +5,8 @@ const config = {
 
     // Game ini
     NEXT_ROUND_GOAL_INCR_RATIO: 1.58,
-    NEXT_ROUND_INTERVAL: 24*3600*1000,
-    GAME_INITIAL_GOAL: 50000000000000000000,
+    NEXT_ROUND_INTERVAL: parseInt(process.env.NEXT_ROUND_INTERVAL) || 24*3600*1000,
+    GAME_INITIAL_GOAL: parseInt(process.env.GAME_INITIAL_GOAL) || 50000000000000000000,
 };
 
 export default config;

@@ -22,7 +22,7 @@ class GameFactory {
     static createNewRound(pool: PrizePool, createdAt: Date = new Date()): Game {
         let newGame = new Game(pool);
         newGame.round = 1;
-        newGame.userBetList = [];
+        newGame.userBetList = {};
         newGame.goal = config.GAME_INITIAL_GOAL;
         newGame.beginAt = createdAt;
         newGame.deadline = new Date(createdAt.getTime() + config.NEXT_ROUND_INTERVAL);

@@ -84,7 +84,7 @@ class GameRepository {
         const gameData = await GameTable.create(insertGameData);
 
         game.id = gameData.id;
-        await bluebird.map(game.userBetList, async(bet: UserBet) => {
+        await bluebird.map(game.getUserBetArray(), async(bet: UserBet) => {
             await this.userBetRepo.createUserBet(game, bet);
         });
     }
@@ -95,7 +95,7 @@ class GameRepository {
             {where: {id: game.id}}
         );
 
-        await bluebird.map(game.userBetList, async(bet: UserBet) => {
+        await bluebird.map(game.getUserBetArray(), async(bet: UserBet) => {
             await this.userBetRepo.updateUserBet(bet);
         })
     }

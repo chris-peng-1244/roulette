@@ -32,9 +32,9 @@ async function rotate() {
     }
 
     // Check if the queue is empty
-    const count = await createUserBetLogRepository().countPendingLogs();
-    if (!count) {
-        logger.info('Game reaches deadline, but there are still user bets queueing...');
+    const count = await createUserBetLogRepository().countPendingLogs(currentGame);
+    if (count) {
+        logger.info(`Game reaches deadline, but there are still ${count} user bets queueing...`);
         return;
     }
 
