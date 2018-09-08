@@ -56,22 +56,48 @@ class GameRepository {
         game.round = data.round;
         game.goal = toWei(data.goal, 'ether');
         game.beginAt = data.beginAt;
+        if (data.previousGameId) {
+            game._previousGameId = data.previousGameId;
+        }
         return game;
     }
 
+    async getPreviousGame(game: Game): Promise<Game | null> {
+        if (!game._previousGameId) {
+            return null;
+        }
+
+        return await this.findById(game._previousGameId);
+    }
+
     async createGame(game: Game) {
-        const gameData = await GameTable.create({
+        let insertGameData = {
             round: game.round,
             beginAt: game.beginAt,
             deadline: game.deadline,
             status: game.status,
             goal: fromWei(game.goal),
-        });
+        };
+        if (game._previousGameId) {
+            insertGameData.previousGameId = game._previousGameId;
+        }
+        const gameData = await GameTable.create(insertGameData);
 
         game.id = gameData.id;
         await bluebird.map(game.userBetList, async(bet: UserBet) => {
             await this.userBetRepo.createUserBet(game, bet);
         });
+    }
+
+    async updateGame(game: Game) {
+        await GameTable.update(
+            {status: game.status},
+            {where: {id: game.id}}
+        );
+
+        await bluebird.map(game.userBetList, async(bet: UserBet) => {
+            await this.userBetRepo.updateUserBet(bet);
+        })
     }
 }
 

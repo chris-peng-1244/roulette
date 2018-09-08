@@ -23,6 +23,8 @@ class Game {
     status: string;
     userBetList: {[number]: UserBet};
     realPool: PrizePool;
+    _previousGameId: number;
+    previousGame: Game;
 
     constructor(realPool: PrizePool, userBetList?: UserBet[] = {}) {
         this.userBetList = userBetList;

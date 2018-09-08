@@ -9,6 +9,7 @@ class GameFactory {
 
     static createNextRound(pool: PrizePool, currentGame: Game, createdAt: Date = new Date()): Game {
         let newGame = new Game(pool);
+        newGame._previousGameId = currentGame.id;
         newGame.round = currentGame.round + 1;
         newGame.goal = currentGame.goal * config.NEXT_ROUND_GOAL_INCR_RATIO;
         newGame.userBetList = {};

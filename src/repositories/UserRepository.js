@@ -63,6 +63,17 @@ class UserRepository {
         }
     }
 
+    async setUserBalance(user: User) {
+        try {
+            await UserTable.update(
+                {balance: fromWei(user.balance)},
+                {where: {id: user.id}}
+            );
+        } catch (e) {
+            logger.error('[UserRepository] updateUserBalance ' + e.stack);
+        }
+    }
+
     async _randomInviteCode(): string {
         let foundUniqueCode = false;
         const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';

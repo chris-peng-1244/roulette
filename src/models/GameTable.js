@@ -18,6 +18,9 @@ const GameTable = connection.define('games', {
     },
     goal: {
         type: Sequelize.DECIMAL(23, 18),
+    },
+    previousGameId: {
+        type: Sequelize.INTEGER,
     }
 });
 

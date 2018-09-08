@@ -51,6 +51,19 @@ class UserBetRepository {
         betData.lastInvestedAt = userBet.lastInvestedAt;
         await betData.save();
     }
+
+    async updateUserBet(userBet: UserBet) {
+        await UserBetTable.update(
+            {
+                reward: userBet.reward,
+                manualInvest: userBet.manualInvest,
+                autoInvest: userBet.autoInvest,
+                lastInvestedAt: userBet.lastInvestedAt,
+            },
+            {where: {id: userBet.id}}
+        );
+    }
+
 }
 
 export default UserBetRepository;

@@ -3,6 +3,8 @@
 import UserBetLog from "../domains/UserBetLog";
 import UserBetLogTable from "../models/UserBetLogTable";
 import {fromWei} from '../utils/eth-units';
+import Game from "../domains/Game";
+import UserBetLogStatus from "../domains/UserBetLogStatus";
 
 class UserBetLogRepository {
     async addUserBetLog(log: UserBetLog) {
@@ -41,6 +43,12 @@ class UserBetLogRepository {
             {status: log.status, comment: log.comment},
             {where: {id: log.id}}
         );
+    }
+
+    async countPendingLogs(game: Game): Promise<number> {
+        return await UserBetLogTable.count({
+            where: {gameId: game.id, status: UserBetLogStatus.PENDING},
+        });
     }
 }
 
