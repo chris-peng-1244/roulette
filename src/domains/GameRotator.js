@@ -4,6 +4,7 @@ import GameStatus from './GameStatus';
 import AssetStrategy from "./AssetStrategy";
 import PrizePool from "./PrizePool";
 import GameFactory from "./GameFactory";
+import Transaction from "./Transaction";
 
 class GameRotator {
     previousGame: Game | null;
@@ -16,7 +17,7 @@ class GameRotator {
         this.currentGame = currentGame;
     }
 
-    rotate(): Game {
+    rotate(): {newRound: Game, transactions: Transaction[]} {
         const now = new Date();
         let newRound;
         let strategy;
@@ -49,8 +50,8 @@ class GameRotator {
             }
         }
 
-        strategy.evaluate(this.previousGame, this.currentGame, newRound, this.pool);
-        return newRound;
+        const transactions = strategy.evaluate(this.previousGame, this.currentGame, newRound, this.pool);
+        return {newRound, transactions};
     }
 
     _createNextRound(createdAt: Date = new Date()): Game {

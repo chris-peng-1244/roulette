@@ -4,6 +4,7 @@ import _ from 'lodash';
 import UserBet from "./UserBet";
 import User from "./User";
 import PrizePool from "./PrizePool";
+import Transaction from "./Transaction";
 
 const AUTO_INVEST_RATIO = 0.05;
 
@@ -30,11 +31,14 @@ class RefundStrategy {
         let ratio = pool.total / totalFund;
         ratio = ratio > 1 ? 1 : ratio;
 
+        let tx: Transaction[] = [];
         _.forEach(userFunds, (fund, userId) => {
             const refund = Math.floor(userFunds[userId] * ratio);
             users[userId].balance += refund;
             pool.total -= refund;
+            tx.push(Transaction.createRefundTransaction(users[userId], refund));
         });
+        return tx;
     }
 
 }
@@ -48,15 +52,18 @@ class NextRoundStrategy {
                 bet.manualInvest *= (1 - AUTO_INVEST_RATIO);
             }
         });
+        return [];
     }
 }
 
 class SucceedStrategy {
     evaluate(previous: Game, current: Game, next: Game, pool: PrizePool) {
+        let txList = [];
         _.forEach(previous.userBetList, (bet: UserBet) => {
             const totalReward = bet.reward + bet.getInvestment();
             bet.user.balance += totalReward;
             pool.total -= totalReward;
+            txList.push(Transaction.createRefundTransaction(bet.user, totalReward));
         });
         const lastBet: UserBet = _getLastBet(current);
         _.forEach(current.userBetList, (bet: UserBet) => {
@@ -74,6 +81,7 @@ class SucceedStrategy {
                 }
             }
         });
+        return txList;
     }
 }
 

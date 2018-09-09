@@ -16,6 +16,10 @@ gulp.task('build', () => {
             includeContent: false,
             sourceRoot: './src',
         }))
+        .on('error', error => {
+            console.error(error.toString());
+            this.emit('end');
+        })
         .pipe(gulp.dest('lib'));
 });
 

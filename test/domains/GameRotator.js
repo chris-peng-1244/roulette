@@ -38,7 +38,7 @@ describe("GameTable rotator", () => {
         betB.reward.should.equal(1000000000000000000);
 
         const rotator = new GameRotator(prizePool, null, game);
-        const newRound = rotator.rotate();
+        const {newRound, transactions} = rotator.rotate();
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(1);
         newRound.goal.should.equal(50000000000000000000);
@@ -69,7 +69,7 @@ describe("GameTable rotator", () => {
         betC.reward.should.equal(7000000000000000000);
 
         const rotator = new GameRotator(prizePool, null, game);
-        const newRound = rotator.rotate();
+        const { newRound, transactions } = rotator.rotate();
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(2);
         newRound.goal.should.equal(79000000000000000000);
@@ -89,7 +89,8 @@ describe("GameTable rotator", () => {
         newRound.addUserBet(betCNew);
         prizePool.total.should.equal(70000000000000000000);
         const rotator2 = new GameRotator(prizePool, game, newRound);
-        const anotherNewRound = rotator2.rotate();
+        let result = rotator2.rotate();
+        const anotherNewRound = result.newRound;
         anotherNewRound.round.should.equal(1);
         anotherNewRound.goal.should.equal(50000000000000000000);
         userA.balance.should.equal(30000000000000000000);
@@ -112,7 +113,8 @@ describe("GameTable rotator", () => {
         prizePool.total.should.equal(50000000000000000000);
 
         let rotator = new GameRotator(prizePool, null, round1);
-        const round2 = rotator.rotate();
+        let result = rotator.rotate();
+        const round2 = result.newRound;
         userA.balance += 30000000000000000000;
         userC.balance += 50000000000000000000;
         round2.addUserBet(UserBet.makeManualBet(round2, userC, 50000000000000000000));
@@ -120,7 +122,8 @@ describe("GameTable rotator", () => {
         prizePool.total.should.equal(130000000000000000000);
         round2.userBetList[userA.id].lastInvestedAt = new Date(round2.userBetList[userA.id].lastInvestedAt.getTime() + 10);
         rotator = new GameRotator(prizePool, round1, round2);
-        const round3 = rotator.rotate();
+        result = rotator.rotate();
+        const round3 = result.newRound;
         prizePool.total.should.equal(72500000000000000000);
         round1.status.should.equal(GameStatus.SUCCEED);
         round2.status.should.equal(GameStatus.PENDING_FOR_NEXT_ROUND);
@@ -149,7 +152,8 @@ describe("GameTable rotator", () => {
         round1.addUserBet(betC);
 
         let rotator = new GameRotator(prizePool, null, round1);
-        const round2 = rotator.rotate();
+        let result = rotator.rotate();
+        const round2 = result.newRound;
         const userD = new User(4, 10000000000000000000);
         userA.balance += 30000000000000000000;
         userC.balance += 50000000000000000000;
@@ -158,9 +162,11 @@ describe("GameTable rotator", () => {
         round2.addUserBet(UserBet.makeManualBet(round2, userA, 30000000000000000000));
         round2.userBetList[userA.id].lastInvestedAt = new Date(round2.userBetList[userA.id].lastInvestedAt.getTime() + 10);
         rotator = new GameRotator(prizePool, round1, round2);
-        const round3 = rotator.rotate();
+        result = rotator.rotate();
+        const round3 = result.newRound;
         rotator = new GameRotator(prizePool, round2, round3);
-        const round4 = rotator.rotate();
+        result = rotator.rotate();
+        const round4 = result.newRound;
         round4.round.should.equal(1);
         round2.status.should.equal(GameStatus.FAIL_AT_NEXT_ROUND);
         round3.status.should.equal(GameStatus.FAIL_AT_ITS_OWN_ROUND);

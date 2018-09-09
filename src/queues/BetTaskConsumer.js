@@ -5,12 +5,13 @@ import QueueName from "./QueueName";
 import logger from '../logger';
 import UserBet from "../domains/UserBet";
 import {
-    createGameRepository, createPrizePoolRepository,
+    createGameRepository, createPrizePoolRepository, createTransactionRepository,
     createUserBetLogRepository,
     createUserBetRepository,
     createUserRepository
 } from "../repositories/RepositoryFactory";
 import UserBetLog from "../domains/UserBetLog";
+import Transaction from "../domains/Transaction";
 
 class BetTaskConsumer {
     async consume() {
@@ -63,6 +64,8 @@ class BetTaskConsumer {
             const addedBet = task.game.addUserBet(task.userBet);
             await createUserBetRepository().createUserBet(task.game, addedBet);
             await createPrizePoolRepository().incrPrizePool(task.userBet.manualInvest);
+            const tx = Transaction.createBetTransaction(task.userBet.user, task.userBet.getInvestment(), task.userBet.lastInvestedAt);
+            await createTransactionRepository().createTransaction(tx);
         } catch (e) {
             logger.error('[BetTaskConsumer] Resolve error ' + e.stack);
             return false;

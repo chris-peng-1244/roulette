@@ -8,7 +8,7 @@ router.get('/', async(req, res, next) => {
     const transactions = await txRepo.findAllByUser(req.app.get('user'));
     return res.json(transactions.map(transaction => {
         return {
-            createdTime: format(transaction.createdTime),
+            createdTime: format(transaction.createdAt),
             value: fromWei(transaction.value),
             type: transaction.type,
         };
