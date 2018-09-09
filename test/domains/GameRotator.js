@@ -8,6 +8,8 @@ const UserBet = require("../../lib/domains/UserBet").default;
 const User = require("../../lib/domains/User").default;
 const GameRotator = require("../../lib/domains/GameRotator").default;
 const PrizePool = require("../../lib/domains/PrizePool").default;
+const TransactionType = require("../../lib/domains/TransactionType").default;
+
 
 let userA, userB, userC, prizePool;
 
@@ -39,6 +41,11 @@ describe("GameTable rotator", () => {
 
         const rotator = new GameRotator(prizePool, null, game);
         const {newRound, transactions} = rotator.rotate();
+        const txA = transactions.filter(tx => tx.user.id === userA.id)[0];
+        txA.type.should.equal(TransactionType.REFUND);
+        txA.value.should.equal(20000000000000000000);
+        const txB = transactions.filter(tx => tx.user.id === userB.id)[0];
+        txB.value.should.equal(10000000000000000000);
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(1);
         newRound.goal.should.equal(50000000000000000000);
@@ -69,7 +76,7 @@ describe("GameTable rotator", () => {
         betC.reward.should.equal(7000000000000000000);
 
         const rotator = new GameRotator(prizePool, null, game);
-        const { newRound, transactions } = rotator.rotate();
+        const { newRound } = rotator.rotate();
         newRound.status.should.equal(GameStatus.STARTED);
         newRound.round.should.equal(2);
         newRound.goal.should.equal(79000000000000000000);
@@ -91,6 +98,13 @@ describe("GameTable rotator", () => {
         const rotator2 = new GameRotator(prizePool, game, newRound);
         let result = rotator2.rotate();
         const anotherNewRound = result.newRound;
+        const transactions = result.transactions;
+        const txA = transactions.filter(tx => tx.user.id === userA.id)[0];
+        txA.value.should.equal(30000000000000000000);
+        const txB = transactions.filter(tx => tx.user.id === userB.id)[0];
+        txB.value.should.equal(10000000000000000000);
+        const txC = transactions.filter(tx => tx.user.id === userC.id)[0];
+        txC.value.should.equal(30000000000000000000);
         anotherNewRound.round.should.equal(1);
         anotherNewRound.goal.should.equal(50000000000000000000);
         userA.balance.should.equal(30000000000000000000);
@@ -124,6 +138,13 @@ describe("GameTable rotator", () => {
         rotator = new GameRotator(prizePool, round1, round2);
         result = rotator.rotate();
         const round3 = result.newRound;
+        const transactions = result.transactions;
+        const txA = transactions.filter(tx => tx.user.id === userA.id)[0];
+        txA.value.should.equal(21000000000000000000);
+        const txB = transactions.filter(tx => tx.user.id === userB.id)[0];
+        txB.value.should.equal(10500000000000000000);
+        const txC = transactions.filter(tx => tx.user.id === userC.id)[0];
+        txC.value.should.equal(26000000000000000000);
         prizePool.total.should.equal(72500000000000000000);
         round1.status.should.equal(GameStatus.SUCCEED);
         round2.status.should.equal(GameStatus.PENDING_FOR_NEXT_ROUND);
@@ -175,5 +196,14 @@ describe("GameTable rotator", () => {
         (userB.balance/1000000000000000000).should.be.closeTo(10.9393, 0.0001);
         (userC.balance/1000000000000000000).should.be.closeTo(72.0303, 0.0001);
         (userD.balance/1000000000000000000).should.be.closeTo(8.7878, 0.0001);
+        const transactions = result.transactions;
+        const txA = transactions.filter(tx => tx.user.id === userA.id)[0];
+        txA.value.should.equal(27242424242424242000);
+        const txB = transactions.filter(tx => tx.user.id === userB.id)[0];
+        txB.value.should.equal(439393939393939400);
+        const txC = transactions.filter(tx => tx.user.id === userC.id)[0];
+        txC.value.should.equal(36030303030303030000);
+        const txD = transactions.filter(tx => tx.user.id === userD.id)[0];
+        txD.value.should.equal(8787878787878788000);
     });
 });

@@ -45,7 +45,7 @@ function createUserAssetRepository(): UserAssetRepository {
     return userAssetRepo;
 }
 
-function createTransactionRepository(): UserAssetRepository {
+function createTransactionRepository(): TransactionRepository {
     if (!txRepo) {
         txRepo = new TransactionRepository();
     }

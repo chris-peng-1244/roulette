@@ -23,10 +23,10 @@ class AssetStrategy {
 }
 
 class RefundStrategy {
-    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
+    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool): Transaction[] {
         const {totalFund, userFunds, users} = _getFundsInfo(previous, current);
         if (!totalFund) {
-            return;
+            return [];
         }
         let ratio = pool.total / totalFund;
         ratio = ratio > 1 ? 1 : ratio;
@@ -44,7 +44,7 @@ class RefundStrategy {
 }
 
 class NextRoundStrategy {
-    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool) {
+    evaluate(previous: Game | null, current: Game, next: Game, pool: PrizePool): Transaction[] {
         _.forEach(current.userBetList, (bet: UserBet) => {
             if (bet.manualInvest) {
                 const nextBet = UserBet.makeAutoBet(next, bet.user, bet.manualInvest*AUTO_INVEST_RATIO);
@@ -57,13 +57,13 @@ class NextRoundStrategy {
 }
 
 class SucceedStrategy {
-    evaluate(previous: Game, current: Game, next: Game, pool: PrizePool) {
+    evaluate(previous: Game, current: Game, next: Game, pool: PrizePool): Transaction[] {
         let txList = [];
         _.forEach(previous.userBetList, (bet: UserBet) => {
             const totalReward = bet.reward + bet.getInvestment();
             bet.user.balance += totalReward;
             pool.total -= totalReward;
-            txList.push(Transaction.createRefundTransaction(bet.user, totalReward));
+            txList.push(Transaction.createRewardTransaction(bet.user, totalReward));
         });
         const lastBet: UserBet = _getLastBet(current);
         _.forEach(current.userBetList, (bet: UserBet) => {

@@ -1,8 +1,10 @@
 import config from './config';
-import {createLogger, transports, format } from 'winston';
+import winston from 'winston';
+const {createLogger, transports, format } = winston;
 
 const logger = createLogger({
     format: format.combine(
+        format.colorize(),
         format.timestamp(),
         format.json(),
     ),
@@ -17,6 +19,7 @@ const logger = createLogger({
         }),
         new transports.Console({
             level: 'debug',
+            colorize: true,
         })
     ]
 });

@@ -20,6 +20,10 @@ class Transaction {
         return new Transaction(user, TransactionType.REFUND, createdAt, value);
     }
 
+    static createRewardTransaction(user: User, value: number, createdAt: Date = new Date()): Transaction {
+        return new Transaction(user, TransactionType.REWARD, createdAt, value);
+    }
+
     static createBetTransaction(user: User, value: number, createdAt: Date = new Date()): Transaction {
         return new Transaction(user, TransactionType.BET, createdAt, value);
     }

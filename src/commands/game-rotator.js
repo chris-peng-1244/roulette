@@ -3,21 +3,19 @@ import util from 'util';
 import logger from '../logger';
 import {
     createGameRepository,
-    createPrizePoolRepository,
+    createPrizePoolRepository, createTransactionRepository,
     createUserBetLogRepository, createUserRepository
 } from "../repositories/RepositoryFactory";
 import GameRotator from "../domains/GameRotator";
-import GameStatus from "../domains/GameStatus";
 import GameFactory from "../domains/GameFactory";
-import Game from "../domains/Game";
 import bluebird from 'bluebird';
-import UserBet from "../domains/UserBet";
-import _ from 'lodash';
+import Transaction from "../domains/Transaction";
 const setTimeoutPromise = util.promisify(setTimeout);
 
 const gameRepo = createGameRepository();
 const prizePoolRepo = createPrizePoolRepository();
 const userRepo = createUserRepository();
+const txRepo = createTransactionRepository();
 async function rotate() {
     logger.info('Rotating...');
     const prizePool = await prizePoolRepo.getPrizePool();
@@ -47,11 +45,11 @@ async function rotate() {
         prizePool,
         previousGame,
         currentGame);
-    const newRound = rotator.rotate();
+    const {newRound, transactions} = rotator.rotate();
     // Save the changes
     try {
-        if (currentGame.status !== GameStatus.PENDING_FOR_NEXT_ROUND) {
-            await setUserBalance(previousGame, currentGame);
+        if (transactions.length) {
+            await setUserBalance(transactions);
         }
         if (previousGame) {
             await gameRepo.updateGame(previousGame);
@@ -71,22 +69,10 @@ async function createGenesisGame(prizePool) {
     await gameRepo.createGame(genesis);
 }
 
-async function setUserBalance(previousGame: Game, currentGame: Game) {
-    let users = {};
-    if (previousGame) {
-        _.forEach(previousGame.userBetList, (bet: UserBet, userId) => {
-            if (!users[userId]) {
-                users[userId] = bet.user;
-            }
-        });
-    }
-    _.forEach(currentGame.userBetList, (bet: UserBet, userId) => {
-        if (!users[userId]) {
-            users[userId] = bet.user;
-        }
-    });
-    await bluebird.map(Object.values(users), async user => {
-        return await userRepo.setUserBalance(user);
+async function setUserBalance(transactions: Transaction[]) {
+    await bluebird.map(transactions, async transaction => {
+        await txRepo.createTransaction(transaction);
+        return await userRepo.updateUserBalance(transaction.user, transaction.value);
     });
 }
 
