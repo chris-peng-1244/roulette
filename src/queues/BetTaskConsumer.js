@@ -15,6 +15,7 @@ import Transaction from "../domains/Transaction";
 import bluebird from 'bluebird';
 import User from "../domains/User";
 import Game from "../domains/Game";
+import InviteReward from "../domains/InviteReward";
 
 class BetTaskConsumer {
     async consume() {
@@ -71,7 +72,7 @@ class BetTaskConsumer {
             await createUserBetRepository().createUserBet(task.game, addedBet);
 
             // Send reward to its inviter and indirect inviter
-            const inviteRewards = await this.getInviterReward(task.userBet);
+            const inviteRewards = await this.getInviterReward(task);
             await bluebird.map(inviteRewards, async reward => {
                 await createUserBetRepository().addInviteReward(task.game, reward);
             });
@@ -90,8 +91,8 @@ class BetTaskConsumer {
         return true;
     }
 
-    async getInviterReward(bet: UserBet): UserBet[] {
-        return createUserInviteRewardRepository().createInviteReward(bet);
+    async getInviterReward(task: BetTask): InviteReward[] {
+        return createUserInviteRewardRepository().createInviteReward(task.userBet, task.game);
     }
 
     async refund(bet: UserBet) {

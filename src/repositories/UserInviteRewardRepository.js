@@ -6,6 +6,7 @@ import User from "../domains/User";
 import InviteReward from "../domains/InviteReward";
 import bluebird from 'bluebird';
 import {fromWei, toWei} from '../utils/eth-units';
+import Game from "../domains/Game";
 
 class UserInviteRewardRepository {
     userRepo: UserRepository;
@@ -13,12 +14,13 @@ class UserInviteRewardRepository {
         this.userRepo = userRepo;
     }
 
-    async createInviteReward(bet: UserBet) {
+    async createInviteReward(bet: UserBet, game: Game) {
         const rewards = await this._getInviterReward(bet);
         await bluebird.map(rewards, async (reward: InviteReward) => {
             await UserInviteRewardLogTable.create({
                 inviterId: reward.inviter.id,
                 inviteeId: reward.invitee.id,
+                gameId: game.id,
                 reward: fromWei(reward.value),
             });
         });

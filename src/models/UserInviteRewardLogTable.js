@@ -8,6 +8,9 @@ const UserInviteRewardLogTable = connection.define('user-invite-reward-logs', {
     inviteeId: {
         type: Sequelize.INTEGER,
     },
+    gameId: {
+        type: Sequelize.INTEGER,
+    },
     reward: {
         type: Sequelize.DECIMAL(19, 18),
     }
