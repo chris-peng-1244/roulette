@@ -99,6 +99,7 @@ function _db2Domain(value: Object): UserBet{
         value.userId,
         toWei(value.userBalance, 'ether'),
         value.userInviteCode);
+    bet.user.inviterId = value.userInviterId;
     return bet;
 }
 

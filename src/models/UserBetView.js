@@ -13,6 +13,9 @@ const UserBetView = connection.define('v-user-bets', {
     userInviteCode: {
         type: Sequelize.STRING,
     },
+    userInviterId: {
+        type: Sequelize.INTEGER,
+    },
     reward: {
         type: Sequelize.DECIMAL(20, 18),
     },

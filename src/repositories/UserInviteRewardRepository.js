@@ -32,13 +32,13 @@ class UserInviteRewardRepository {
         }
 
         // Inviter has gotten the reward
-        if (this.hasInviteCodeBeenConsumed(bet.user)) {
+        if (await this.hasInviteCodeBeenConsumed(bet.user)) {
             return [];
         }
 
         const inviteCodeOwner = await this.userRepo.findById(bet.user.inviterId);
         if (inviteCodeOwner) {
-            const firstReward = InviteReward.createInviteReward(bet.user, inviteCodeOwner);
+            const firstReward = InviteReward.createInviteReward(bet, inviteCodeOwner);
             const secondInviter = await this.userRepo.findById(inviteCodeOwner.inviterId);
             if (secondInviter) {
                 const secondReward = InviteReward.createIndirectInviteReward(bet, inviteCodeOwner, secondInviter);
@@ -56,7 +56,7 @@ class UserInviteRewardRepository {
                 inviteeId: user.id,
             }
         });
-        return count > 0;
+        return (count > 0);
     }
 }
 
