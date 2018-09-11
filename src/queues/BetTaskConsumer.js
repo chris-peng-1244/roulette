@@ -7,11 +7,14 @@ import UserBet from "../domains/UserBet";
 import {
     createGameRepository, createPrizePoolRepository, createTransactionRepository,
     createUserBetLogRepository,
-    createUserBetRepository,
+    createUserBetRepository, createUserInviteRewardRepository,
     createUserRepository
 } from "../repositories/RepositoryFactory";
 import UserBetLog from "../domains/UserBetLog";
 import Transaction from "../domains/Transaction";
+import bluebird from 'bluebird';
+import User from "../domains/User";
+import Game from "../domains/Game";
 
 class BetTaskConsumer {
     async consume() {
@@ -58,12 +61,25 @@ class BetTaskConsumer {
                 return await createUserBetLogRepository().updateUserBetLog(log);
             }
 
+            // Mark inviter bet log as successful
             logger.debug('[BetTaskConsumer] Successfully add bet');
             log.suceed();
             await createUserBetLogRepository().updateUserBetLog(log);
+
+            // Update inviter's actual bet
             const addedBet = task.game.addUserBet(task.userBet);
             await createUserBetRepository().createUserBet(task.game, addedBet);
+
+            // Send reward to its inviter and indirect inviter
+            const inviteRewards = await this.getInviterReward(task.userBet);
+            await bluebird.map(inviteRewards, async reward => {
+                await createUserBetRepository().addInviteReward(task.game, reward);
+            });
+
+            // Update prize pool
             await createPrizePoolRepository().incrPrizePool(task.userBet.manualInvest);
+
+            // Create a balance transaction
             const tx = Transaction.createBetTransaction(task.userBet.user, task.userBet.getInvestment(), task.userBet.lastInvestedAt);
             await createTransactionRepository().createTransaction(tx);
         } catch (e) {
@@ -72,6 +88,10 @@ class BetTaskConsumer {
         }
 
         return true;
+    }
+
+    async getInviterReward(bet: UserBet): UserBet[] {
+        return createUserInviteRewardRepository().createInviteReward(bet);
     }
 
     async refund(bet: UserBet) {

@@ -27,28 +27,6 @@ class TaskQueue {
         }
     }
 
-    // async consume() {
-    //     const channel = await getChannel();
-    //     channel.assertQueue(this.name, { durable: true });
-    //     return new Promise(resolve => {
-    //         channel.consume(this.name, async msg => {
-    //             if (msg === null) {
-    //                 return resolve(null);
-    //             }
-    //             const taskData = JSON.parse(msg.content.toString());
-    //             const bet = new UserBet();
-    //             bet.user = await createUserRepository().findById(taskData.userId);
-    //             bet.manualInvest = taskData.manualInvest;
-    //             bet.lastInvestedAt = new Date(taskData.lastInvestedAt);
-    //             const game = await createGameRepository().findById(taskData.gameId);
-    //             channel.ack(msg);
-    //             resolve({
-    //                 bet,
-    //                 game,
-    //             });
-    //         });
-    //     });
-    // }
 }
 
 export default TaskQueue;

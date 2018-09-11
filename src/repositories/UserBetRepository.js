@@ -5,6 +5,7 @@ import User from "../domains/User";
 import {toWei,fromWei} from '../utils/eth-units';
 import Game from "../domains/Game";
 import UserBetTable from "../models/UserBetTable";
+import InviteReward from "../domains/InviteReward";
 
 class UserBetRepository {
     async getUserBetListByGameId(gameId: string): Promise<UserBet[]> {
@@ -49,6 +50,27 @@ class UserBetRepository {
         betData.autoInvest = fromWei(toWei(betData.autoInvest) + userBet.autoInvest);
         betData.reward = fromWei(toWei(betData.reward) + userBet.reward);
         betData.lastInvestedAt = userBet.lastInvestedAt;
+        await betData.save();
+    }
+
+    async addInviteReward(game: Game, reward: InviteReward) {
+        const betData = await UserBetTable.find({
+            where: {
+                gameId: game.id,
+                userId: reward.inviter.id,
+            }
+        });
+        if (!betData) {
+            return await UserBetTable.create({
+                gameId: game.id,
+                userId: reward.inviter.id,
+                manualInvest: 0,
+                autoInvest: 0,
+                reward: fromWei(reward.value),
+                lastInvestedAt: new Date(),
+            });
+        }
+        betData.reward = fromWei(toWei(betData.reward) + reward.value);
         await betData.save();
     }
 

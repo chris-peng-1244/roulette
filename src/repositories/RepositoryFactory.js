@@ -8,8 +8,9 @@ import UserRepository from "./UserRepository";
 import UserAssetRepository from "./UserAssetRepository";
 import TransactionRepository from "./TransactionRepository";
 import UserWalletRepository from "./UserWalletRepository";
+import UserInviteRewardRepository from "./UserInviteRewardRepository";
 
-let gameRepo, prizePoolRepo, userBetRepo, userBetLogRepo, userAssetRepo, txRepo, userWalletRepo;
+let gameRepo, prizePoolRepo, userBetRepo, userBetLogRepo, userAssetRepo, txRepo, userWalletRepo, userInviteRewardRepo;
 
 function createGameRepository(): GameRepository {
     if (!gameRepo) {
@@ -60,6 +61,13 @@ function createUserWalletRepository(): UserWalletRepository {
     return userWalletRepo;
 }
 
+function createUserInviteRewardRepository(): UserInviteRewardRepository {
+    if (!userInviteRewardRepo) {
+        userInviteRewardRepo = new UserInviteRewardRepository(createUserRepository());
+    }
+    return userInviteRewardRepo;
+}
+
 function createUserRepository(): UserRepository {
     return UserRepository.getInstance();
 }
@@ -73,4 +81,5 @@ export {
     createUserAssetRepository,
     createTransactionRepository,
     createUserWalletRepository,
+    createUserInviteRewardRepository,
 };
