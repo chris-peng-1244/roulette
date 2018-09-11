@@ -4,26 +4,37 @@ module.exports = {
             name      : 'OnePlay',
             script    : 'lib/index.js',
             env: {
+                watch: ['lib'],
                 NODE_ENV: 'development'
             },
             env_production : {
+                watch: false,
                 NODE_ENV: 'production'
             },
-            watch: ['lib'],
         },
         {
             name : 'GameRotator',
             script: 'lib/commands/game-rotator.js',
             output: 'logs/bet-rotator-out.log',
             error: 'logs/game-rotator-error.log',
-            watch: ['lib'],
+            env: {
+                watch: ['lib'],
+            },
+            env_production: {
+                watch: false,
+            }
         },
         {
             name: 'BetConsumer',
             script: 'lib/commands/bet-consumer.js',
             output: 'logs/bet-consumer-out.log',
             error: 'logs/bet-consumer-error.log',
-            watch: ['lib'],
+            env: {
+                watch: ['lib'],
+            },
+            env_production: {
+                watch: false,
+            }
         }
     ],
 
