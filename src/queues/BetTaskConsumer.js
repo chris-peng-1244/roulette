@@ -34,7 +34,7 @@ class BetTaskConsumer {
                 return ch.ack(msg);
             }
 
-            const bet = UserBet.makeManualBet(game, user, manualInvest);
+            const bet = UserBet.makeManualBetWithoutTakingBalance(game, user, manualInvest);
             bet.lastInvestedAt = new Date(lastInvestedAt);
             const task = new BetTask(game, bet);
             if (this.resolve(task, log)) {

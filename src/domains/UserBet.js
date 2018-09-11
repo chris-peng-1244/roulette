@@ -40,6 +40,16 @@ class UserBet {
         return bet;
     }
 
+
+    static makeManualBetWithoutTakingBalance(game: Game, user: User, invest: number): UserBet {
+        let bet: UserBet = new UserBet();
+        bet.manualInvest = invest;
+        bet.reward = invest * REWARD_RATIO;
+        bet.lastInvestedAt = new Date();
+        bet.user = user;
+        return bet;
+    }
+
     static makeAutoBet(game: Game, user: User, invest: number): UserBet {
         let bet: UserBet = new UserBet();
         bet.manualInvest = 0;
