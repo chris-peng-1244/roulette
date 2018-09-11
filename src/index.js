@@ -23,6 +23,7 @@ app.use('/bet', bet);
 app.use('/user', user);
 app.use('/transaction', transaction);
 
+
 // Error handling
 app.use((err, req, res, next) => {
     logger.error('[App] ' + err.stack);

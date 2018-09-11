@@ -4,8 +4,10 @@ import _ from 'lodash';
 import UserRepository from "../repositories/UserRepository";
 import {sign} from '../utils/jwt';
 import boom from 'boom';
+import {createUserWalletRepository} from "../repositories/RepositoryFactory";
 const router = express.Router();
 const userRepo = UserRepository.getInstance();
+const userWalletRepo = createUserWalletRepository();
 
 router.post('/login', async (req, res, next) => {
     const { mobile, code } = req.body;
@@ -13,14 +15,17 @@ router.post('/login', async (req, res, next) => {
         return next(boom.badRequest('Mobile cannot be empty'));
     }
     let user = await userRepo.findByMobile(mobile);
+    let address = '';
     if (!user) {
         user = await userRepo.createUser(mobile);
+        address = await userWalletRepo.createWallet(user);
     }
     const token = await sign({
         id: user.id,
     });
     return res.json({
         token,
+        address,
     });
 });
 
