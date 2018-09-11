@@ -13,6 +13,7 @@
     "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "boom": "^7.2.0",
+    "cors": "^2.8.4",
     "db-migrate": "^0.11.1",
     "db-migrate-mysql": "^1.1.10",
     "dotenv": "^6.0.0",

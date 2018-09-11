@@ -10,8 +10,10 @@ import user from './routers/user';
 import transaction from './routers/transaction';
 import auth from './middlewares/auth';
 import boom from 'boom';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bearerToken());
 
