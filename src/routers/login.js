@@ -3,11 +3,15 @@ import express from 'express';
 import _ from 'lodash';
 import UserRepository from "../repositories/UserRepository";
 import {sign} from '../utils/jwt';
+import boom from 'boom';
 const router = express.Router();
 const userRepo = UserRepository.getInstance();
 
 router.post('/login', async (req, res, next) => {
     const { mobile, code } = req.body;
+    if (!mobile) {
+        return next(boom.badRequest('Mobile cannot be empty'));
+    }
     let user = await userRepo.findByMobile(mobile);
     if (!user) {
         user = await userRepo.createUser(mobile);
