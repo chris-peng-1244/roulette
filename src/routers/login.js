@@ -19,7 +19,10 @@ router.post('/login', async (req, res, next) => {
     if (!user) {
         user = await userRepo.createUser(mobile, inviteCode);
         address = await userWalletRepo.createWallet(user);
+    } else {
+        address = user.address;
     }
+
     const token = await sign({
         id: user.id,
     });

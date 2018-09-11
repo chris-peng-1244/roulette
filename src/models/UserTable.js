@@ -15,7 +15,10 @@ const UserTable = connection.define('users', {
     },
     inviterId: {
         type: Sequelize.STRING,
-    }
+    },
+    ethereumAddress: {
+        type: Sequelize.STRING,
+    },
 });
 
 export default UserTable;

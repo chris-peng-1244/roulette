@@ -107,7 +107,7 @@ class UserRepository {
 }
 
 function _db2Domain(data: Object): User {
-    return new User(data.id, toWei(data.balance, 'ether'), data.inviteCode, data.address, data.inviterId);
+    return new User(data.id, toWei(data.balance, 'ether'), data.inviteCode, data.ethereumAddress, data.inviterId);
 }
 
 export default UserRepository;
