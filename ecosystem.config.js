@@ -14,7 +14,7 @@ module.exports = {
         {
             name : 'GameRotator',
             script: 'lib/commands/game-rotator.js',
-            output: 'logs/bet-consumer-out.log',
+            output: 'logs/bet-rotator-out.log',
             error: 'logs/game-rotator-error.log',
             watch: ['lib'],
         },
