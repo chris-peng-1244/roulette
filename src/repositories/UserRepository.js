@@ -36,13 +36,30 @@ class UserRepository {
         return _db2Domain(data);
     }
 
-    async createUser(mobile): Promise<UserTable> {
+    async findByInviteCode(inviteCode: string): Promise<User | null> {
+        const data = await UserTable.findOne({
+            where: {inviteCode}
+        });
+        if (!data) {
+            return null;
+        }
+        return _db2Domain(data);
+    }
+
+    async createUser(mobile: string, inviteCode: string = ''): Promise<UserTable> {
         try {
-            const data = await UserTable.create({
+            const json = {
                 mobile,
                 balance: 0,
                 inviteCode: await this._randomInviteCode(),
-            });
+            };
+            if (inviteCode) {
+                const inviter = await this.findByInviteCode(inviteCode);
+                if (inviter) {
+                    json.inviterId = inviter.id;
+                }
+            }
+            const data = await UserTable.create(json);
             return _db2Domain(data);
         } catch (e) {
             logger.error('[UserRepository] createUser', e);

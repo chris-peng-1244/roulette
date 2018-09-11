@@ -10,14 +10,14 @@ const userRepo = UserRepository.getInstance();
 const userWalletRepo = createUserWalletRepository();
 
 router.post('/login', async (req, res, next) => {
-    const { mobile, code } = req.body;
+    const { mobile, code, inviteCode } = req.body;
     if (!mobile) {
         return next(boom.badRequest('Mobile cannot be empty'));
     }
     let user = await userRepo.findByMobile(mobile);
     let address = '';
     if (!user) {
-        user = await userRepo.createUser(mobile);
+        user = await userRepo.createUser(mobile, inviteCode);
         address = await userWalletRepo.createWallet(user);
     }
     const token = await sign({

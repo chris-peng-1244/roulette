@@ -12,6 +12,9 @@ const UserTable = connection.define('users', {
     },
     balance: {
         type: Sequelize.DECIMAL(23, 18),
+    },
+    inviterId: {
+        type: Sequelize.STRING,
     }
 });
 
