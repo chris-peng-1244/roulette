@@ -3,6 +3,8 @@ module.exports = {
         {
             name      : 'OnePlay',
             script    : 'lib/index.js',
+            output: 'logs/oneplay-out.log',
+            error: 'logs/oneplay-error.log',
             env: {
                 watch: ['lib'],
                 NODE_ENV: 'development'
@@ -15,7 +17,7 @@ module.exports = {
         {
             name : 'GameRotator',
             script: 'lib/commands/game-rotator.js',
-            output: 'logs/bet-rotator-out.log',
+            output: 'logs/game-rotator-out.log',
             error: 'logs/game-rotator-error.log',
             env: {
                 watch: ['lib'],
