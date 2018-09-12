@@ -27,7 +27,7 @@ async function rotate() {
         return await createGenesisGame(prizePool);
     }
 
-    if (!currentGame.hasReachedDeadline()) {
+    if (!currentGame.hasReachedDeadline() && !currentGame.isGoalMet()) {
         logger.info('Game is undertaking...');
         return;
     }
