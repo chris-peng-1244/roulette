@@ -34,7 +34,7 @@ router.post('/withdraw', async(req, res, next) => {
     await createTransactionRepository().createTransaction(tx);
     await createUserRepository().updateUserBalance(req.app.get('user'), -1*amount);
     await createUserWalletRepository().withdraw(req.body.to, amount);
-    return res.json(res.body);
+    return res.json(req.body);
 });
 
 export default router;
