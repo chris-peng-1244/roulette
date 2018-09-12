@@ -38,6 +38,7 @@ router.post('/login', async (req, res, next) => {
     return res.json({
         token,
         address,
+        inviteCode: user.inviteCode,
     });
 });
 
