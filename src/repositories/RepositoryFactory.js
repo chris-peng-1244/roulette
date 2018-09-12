@@ -58,7 +58,7 @@ function createTransactionRepository(): TransactionRepository {
 
 function createUserWalletRepository(): UserWalletRepository {
     if (!userWalletRepo) {
-        userWalletRepo = new UserWalletRepository();
+        userWalletRepo = new UserWalletRepository(createUserRepository());
     }
     return userWalletRepo;
 }
