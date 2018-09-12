@@ -7,6 +7,7 @@ import InviteReward from "../domains/InviteReward";
 import bluebird from 'bluebird';
 import {fromWei, toWei} from '../utils/eth-units';
 import Game from "../domains/Game";
+import UserInviteRewardLogView from "../models/UserInviteRewardLogView";
 
 class UserInviteRewardRepository {
     userRepo: UserRepository;
@@ -15,7 +16,7 @@ class UserInviteRewardRepository {
     }
 
     async findAllByUser(user: User): Promise<InviteReward[]> {
-        const data = await UserInviteRewardLogTable.findAll({
+        const data = await UserInviteRewardLogView.findAll({
             where: {
                 inviterId: user.id,
             }
@@ -23,7 +24,9 @@ class UserInviteRewardRepository {
         return data.map(value => {
             const reward = new InviteReward();
             reward.inviter = User.createBlankUser(value.inviterId);
+            reward.inviter.mobile = value.inviterMobile;
             reward.invitee = User.createBlankUser(value.inviteeId);
+            reward.invitee.mobile = value.inviteeMobile;
             reward.value = toWei(value.reward);
             reward.createdAt = value.createdAt;
             return reward;

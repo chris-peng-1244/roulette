@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
     const inviteList = await inviteRepo.findAllByUser(req.app.get('user'));
     return res.json(inviteList.map((invite: InviteReward) => {
         return {
+            inviteeMobile: invite.invitee.mobile,
             reward: fromWei(invite.value),
             createdAt: format(invite.createdAt),
         }
