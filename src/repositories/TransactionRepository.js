@@ -28,7 +28,7 @@ class TransactionRepository {
             return [];
         }
         return data.map(value => {
-            return new Transaction(user, value.type, data.createdAt, toWei(value.value));
+            return new Transaction(user, value.type, value.createdAt, toWei(value.value));
         });
     }
 }
