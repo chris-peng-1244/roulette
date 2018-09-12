@@ -63,7 +63,7 @@ router.get('/', async(req, res, next) => {
         }
     }
     return res.json({
-        invest: fromWei(invest),
+        amount: fromWei(invest),
         reward: fromWei(reward),
     });
 });

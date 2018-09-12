@@ -10,7 +10,7 @@ router.get('/', async(req, res, next) => {
     return res.json(transactions.map(transaction => {
         return {
             createdTime: format(transaction.createdAt),
-            value: fromWei(transaction.getValueChange()),
+            amount: fromWei(transaction.getValueChange()),
             type: transaction.type,
         };
     }));
