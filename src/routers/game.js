@@ -16,7 +16,9 @@ router.get('/', async (req, res, next) => {
     return res.json({
         goal: fromWei(game.goal),
         pool: fromWei(game.getPool()),
+        round: game.round,
         deadline: format(game.deadline),
+        endInSeconds: game.endInSeconds(),
     });
 });
 

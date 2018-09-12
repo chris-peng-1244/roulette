@@ -8,6 +8,7 @@ class InviteReward {
     inviter: User;
     invitee: User;
     value: number;
+    createdAt: Date;
 
     static createInviteReward(bet: UserBet, inviter: User) {
         const reward = new InviteReward();

@@ -14,6 +14,22 @@ class UserInviteRewardRepository {
         this.userRepo = userRepo;
     }
 
+    async findAllByUser(user: User): Promise<InviteReward[]> {
+        const data = await UserInviteRewardLogTable.findAll({
+            where: {
+                inviterId: user.id,
+            }
+        });
+        return data.map(value => {
+            const reward = new InviteReward();
+            reward.inviter = User.createBlankUser(value.inviterId);
+            reward.invitee = User.createBlankUser(value.inviteeId);
+            reward.value = toWei(value.reward);
+            reward.createdAt = value.createdAt;
+            return reward;
+        });
+    }
+
     async createInviteReward(bet: UserBet, game: Game) {
         const rewards = await this._getInviterReward(bet);
         await bluebird.map(rewards, async (reward: InviteReward) => {

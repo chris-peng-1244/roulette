@@ -7,6 +7,7 @@ import login from './routers/login';
 import game from './routers/game';
 import bet from './routers/bet';
 import user from './routers/user';
+import invitation from './routers/invitation';
 import transaction from './routers/transaction';
 import auth from './middlewares/auth';
 import boom from 'boom';
@@ -24,6 +25,7 @@ app.use(auth);
 app.use('/bet', bet);
 app.use('/user', user);
 app.use('/transaction', transaction);
+app.use('/invitation', invitation);
 
 
 // Error handling

@@ -25,7 +25,6 @@ class Game {
     userBetList: {[number]: UserBet};
     realPool: PrizePool;
     _previousGameId: number;
-    previousGame: Game;
 
     constructor(realPool: PrizePool, userBetList?: UserBet[] = {}) {
         this.userBetList = userBetList;
@@ -56,6 +55,13 @@ class Game {
 
     hasReachedDeadline(): boolean {
         return this.deadline.getTime() <= new Date().getTime();
+    }
+
+    endInSeconds() {
+        if (this.hasReachedDeadline()) {
+            return 0;
+        }
+        return Math.round((this.deadline.getTime() - new Date().getTime())/1000);
     }
 
     addUserBet(bet: UserBet) {
