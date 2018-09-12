@@ -9,8 +9,10 @@ import UserAssetRepository from "./UserAssetRepository";
 import TransactionRepository from "./TransactionRepository";
 import UserWalletRepository from "./UserWalletRepository";
 import UserInviteRewardRepository from "./UserInviteRewardRepository";
+import SmsVerifyCodeRepository from "./SmsVerifyCodeRepository";
 
 let gameRepo, prizePoolRepo, userBetRepo, userBetLogRepo, userAssetRepo, txRepo, userWalletRepo, userInviteRewardRepo;
+let smsVerifyCodeRepo;
 
 function createGameRepository(): GameRepository {
     if (!gameRepo) {
@@ -68,6 +70,13 @@ function createUserInviteRewardRepository(): UserInviteRewardRepository {
     return userInviteRewardRepo;
 }
 
+function createSmsVerifyCodeRepository(): SmsVerifyCodeRepository {
+    if (!smsVerifyCodeRepo) {
+        smsVerifyCodeRepo = new SmsVerifyCodeRepository();
+    }
+    return smsVerifyCodeRepo;
+}
+
 function createUserRepository(): UserRepository {
     return UserRepository.getInstance();
 }
@@ -82,4 +91,5 @@ export {
     createTransactionRepository,
     createUserWalletRepository,
     createUserInviteRewardRepository,
+    createSmsVerifyCodeRepository,
 };

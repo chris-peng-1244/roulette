@@ -11,6 +11,7 @@ const config = {
 
     // Ethereum
     ETH_API: process.env.ETH_API || 'http://localhost:13000'
+
 };
 
 export default config;
