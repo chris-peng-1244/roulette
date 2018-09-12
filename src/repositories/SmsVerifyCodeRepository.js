@@ -15,7 +15,7 @@ class SmsVerifyCodeRepository {
             result += String(_.random(0, 9));
         }
 
-        await redis.setexAsync(key, 60, result);
+        await redis.setexAsync(key, 300, result);
         return {error: '', code: result};
     }
 
