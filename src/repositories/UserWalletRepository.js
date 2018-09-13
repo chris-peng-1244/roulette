@@ -30,13 +30,14 @@ class UserWalletRepository {
         }
     }
 
-    async withdraw(to: string, amount: number) {
+    async withdraw(from: string, to: string, amount: number) {
         try {
             await request({
                 method: 'POST',
                 uri: config.ETH_API + '/accounts/withdraw',
                 json: true,
                 body: {
+                    from,
                     to,
                     amount: fromWei(amount),
                 }
