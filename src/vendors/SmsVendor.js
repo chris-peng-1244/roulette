@@ -34,7 +34,7 @@ class SmsVendor {
                     username: this.username,
                     password: this.password,
                     mobile: mobile,
-                    content: encodeURIComponent(`【游戏大玩家】您的验证码是：${code}。请不要把验证码泄露给其他人。`)
+                    content: `【One Player】您的验证码是：${code}。请不要把验证码泄露给其他人。`
                 }
             });
             return true;
