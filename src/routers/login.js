@@ -59,7 +59,7 @@ router.post('/verify-code', async (req, res, next) => {
     try {
         if (await smsVendor.sendVerifyCode(mobile, code)) {
             return res.json({
-                code
+                mobile
             });
         }
     } catch (e) {
